@@ -1,12 +1,12 @@
 # Rhombix Technologies Tasks
 
-This repository contains the projects and tasks completed during my internship at Rhombix Technologies.
+This repository contains the projects and tasks completed during my internship at **Rhombix Technologies**.
 
-## Tasks
+## 📂 Projects
 
 ### Task 01 — Personal Portfolio
 
-A modern and responsive personal portfolio website built with React.js and Vite.
+A modern and responsive personal portfolio website built with **React.js** and **Vite**.
 
 **Technologies:**
 - React.js
@@ -28,8 +28,14 @@ A modern and responsive personal portfolio website built with React.js and Vite.
 - Smooth scrolling navigation
 - Framer Motion animations
 
-📁 Project: [`portfolio`](./portfolio)
+📁 **Project Folder:** [`portfolio`](./portfolio)
 
 ---
 
-More internship tasks will be added to this repository.
+More internship tasks will be added to this repository as they are completed.
+
+## 👩‍💻 Author
+
+**Alisha Asmat**
+
+GitHub: [@alisha-tech21](https://github.com/alisha-tech21)

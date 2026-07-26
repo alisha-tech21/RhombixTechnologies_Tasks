@@ -1,0 +1,358 @@
+.projects {
+  padding: 40px 8% 90px;
+  background: var(--bg);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+/* ======================
+      HEADING
+====================== */
+
+.projects-heading {
+  text-align: center;
+  max-width: 750px;
+  margin: 0 auto 70px;
+}
+
+.projects-heading h2 {
+  font-size: 52px;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.projects-heading span {
+  color: #9333ea;
+}
+
+.projects-heading p {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+/* ======================
+      LAYOUT
+====================== */
+
+/* ======================
+      CARD
+====================== */
+
+.project-card {
+  width: 95%;
+  max-width: 340px;
+  margin: 0 auto;
+  background: var(--card);
+  border: 1px solid rgba(147, 51, 234, 0.25);
+  border-radius: 18px;
+  padding: 18px;
+  transition: all 0.35s ease;
+  overflow: hidden;
+}
+
+.project-card:hover {
+  transform: translateY(-8px);
+  border-color: #9333ea;
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.35);
+}
+/* ======================
+      NUMBER
+====================== */
+
+.project-number {
+  font-size: 28px;
+  font-weight: 800;
+  color: #9333ea;
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* ======================
+      TITLE
+====================== */
+
+.project-card h3 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+}
+
+/* ======================
+      DESCRIPTION
+====================== */
+
+.project-description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  min-height: 42px;
+  margin-bottom: 15px;
+}
+
+/* ======================
+      TECH STACK
+====================== */
+
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.tech-stack span {
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: rgba(147, 51, 234, 0.15);
+  border: 1px solid rgba(147, 51, 234, 0.4);
+  color: #d8b4fe;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.tech-stack span:hover {
+  background: #9333ea;
+  color: white;
+}
+
+/* ======================
+      IMAGE
+====================== */
+
+.project-image {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(182, 51, 234, 0.35);
+}
+
+.project-image img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  transition: 0.4s ease;
+}
+
+.project-card:hover .project-image img {
+  transform: scale(1.08);
+}
+
+/* ======================
+      OVERLAY
+====================== */
+
+.project-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+
+  opacity: 0;
+  transition: 0.35s;
+}
+
+.project-card:hover .project-overlay {
+  opacity: 1;
+}
+/* ======================
+      BUTTONS
+====================== */
+
+.project-overlay a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 8px 14px;
+
+  border-radius: 30px;
+
+  text-decoration: none;
+
+  color: white;
+
+  border: 1px solid #9333ea;
+
+  font-size: 13px;
+
+  transition: 0.3s;
+}
+
+.project-overlay a:hover {
+  background: #9333ea;
+}
+
+/* ======================
+      SLIDER WRAPPER
+====================== */
+
+.projects-slider-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 0 65px;
+}
+
+/* ======================
+      SWIPER
+====================== */
+
+.projects-slider {
+  width: 100%;
+  padding: 15px 0 65px !important;
+}
+
+.projects-slider .swiper-wrapper {
+  align-items: stretch;
+}
+
+.projects-slider .swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  height: auto;
+}
+
+/* ======================
+      CUSTOM ARROWS
+====================== */
+
+.projects-arrow {
+  position: absolute;
+
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+  border: 2px solid #9333ea;
+
+  background: var(--surface);
+  color: #9333ea;
+
+  font-size: 34px;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  z-index: 20;
+
+  transition: all 0.3s ease;
+}
+
+.projects-arrow:hover {
+  background: #9333ea;
+  color: #fff;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.projects-arrow-left {
+  left: 0;
+}
+
+.projects-arrow-right {
+  right: 0;
+}
+
+/* ======================
+      DOTS
+====================== */
+
+.projects-slider .swiper-pagination {
+  position: absolute !important;
+
+  left: 0 !important;
+  right: 0 !important;
+
+  bottom: 5px !important;
+
+  top: auto !important;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 6px;
+}
+
+.projects-slider .swiper-pagination-bullet {
+  width: 9px;
+  height: 9px;
+
+  margin: 0 !important;
+
+  background: #666;
+  opacity: 1;
+
+  transition: all 0.3s ease;
+}
+
+.projects-slider .swiper-pagination-bullet-active {
+  background: #9333ea;
+  transform: scale(1.2);
+}
+/* ======================
+      RESPONSIVE
+====================== */
+
+@media (max-width: 768px) {
+  .projects-heading h2 {
+    font-size: 40px;
+  }
+
+  .projects-slider-wrapper {
+    padding: 0 50px;
+  }
+
+  .projects-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 28px;
+  }
+
+  .project-card {
+    width: 100%;
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 500px) {
+  .projects {
+    padding: 70px 5%;
+  }
+
+  .projects-heading h2 {
+    font-size: 32px;
+  }
+
+  .projects-slider-wrapper {
+    padding: 0 45px;
+  }
+
+  .projects-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 25px;
+  }
+
+  .project-card {
+    padding: 18px;
+  }
+
+  .project-image img {
+    height: 180px;
+  }
+}
