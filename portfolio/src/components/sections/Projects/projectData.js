@@ -5,6 +5,12 @@ import travelBlog from "../../../assets/images/blog.png";
 import cafeWebsite from "../../../assets/images/cafe web.png";
 import musicWebsite from "../../../assets/images/music.png";
 import landingPage from "../../../assets/images/landing.png";
+import youtubeUI from "../../../assets/images/youtube.png";
+import documentation from "../../../assets/images/docs.png";
+import applicationForm from "../../../assets/images/form.png";
+import businessCard from "../../../assets/images/business card.png";
+import ticTacToe from "../../../assets/images/tictactoe.png";
+import rockPaperScissors from "../../../assets/images/rps.png";
 
 const projectData = [
   {
@@ -106,6 +112,110 @@ const projectData = [
     image: landingPage,
     github:
       "https://github.com/alisha-tech21/Mini-projects/tree/main/project%204%20landing%20page",
+    live: "YOUR_LIVE_DEMO_LINK",
+  },
+  {
+    id: 8,
+    number: "08",
+    title: "YouTube UI Clone",
+
+    description: "YouTube-inspired interface built with HTML and CSS.",
+
+    tech: ["HTML5", "CSS3"],
+
+    image: youtubeUI,
+
+    github:
+      "https://github.com/alisha-tech21/Mini-projects/tree/main/project%207%20Youtube%20clone",
+
+    live: "YOUR_LIVE_DEMO_LINK",
+  },
+
+  {
+    id: 9,
+    number: "09",
+    title: "Documentation Website",
+
+    description:
+      "Documentation website with sidebar navigation and topic sections.",
+
+    tech: ["HTML5", "CSS3"],
+
+    image: documentation,
+
+    github:
+      "https://github.com/alisha-tech21/Mini-projects/tree/main/project%208%20documnetation%20website",
+
+    live: "YOUR_LIVE_DEMO_LINK",
+  },
+
+  {
+    id: 10,
+    number: "10",
+    title: "Application Form UI",
+
+    description:
+      "Simple and clean application form designed with HTML and CSS.",
+
+    tech: ["HTML5", "CSS3"],
+
+    image: applicationForm,
+
+    github:
+      "https://github.com/alisha-tech21/Mini-projects/tree/main/project%202%20Application%20form",
+
+    live: "YOUR_LIVE_DEMO_LINK",
+  },
+  {
+    id: 11,
+    number: "11",
+    title: "Business Card",
+
+    description:
+      "Simple and professional business card design built with HTML and CSS.",
+
+    tech: ["HTML5", "CSS3"],
+
+    image: businessCard,
+
+    github:
+      "https://github.com/alisha-tech21/html-css-practice/tree/main/business%20card",
+
+    live: "YOUR_LIVE_DEMO_LINK",
+  },
+  {
+    id: 12,
+    number: "12",
+    title: "Tic Tac Toe Game",
+
+    description:
+      "Interactive Tic Tac Toe game built with HTML, CSS, and JavaScript.",
+
+    tech: ["HTML5", "CSS3", "JavaScript"],
+
+    image: ticTacToe,
+
+    github:
+      "https://github.com/alisha-tech21/JS-practice-projects/tree/main/Tic%20Tac%20Toe",
+
+    live: "YOUR_LIVE_DEMO_LINK",
+  },
+
+  {
+    id: 13,
+    number: "13",
+    title: "Rock Paper Scissors",
+
+    description:
+      "Interactive Rock Paper Scissors game built with HTML, CSS, and JavaScript.",
+
+    tech: ["HTML5", "CSS3", "JavaScript"],
+
+    image: rockPaperScissors,
+
+    github:
+      "https://github.com/alisha-tech21/JS-practice-projects/tree/main/Rock%20paper%20scissors",
+
     live: "YOUR_LIVE_DEMO_LINK",
   },
 ];
