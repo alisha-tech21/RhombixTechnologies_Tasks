@@ -88,7 +88,7 @@ const About = () => {
               transition={{ duration: 0.5 }}
             >
               {" "}
-              <h3>5+</h3>
+              <h3>10+</h3>
               <p>Projects</p>
             </motion.div>
             <motion.div
