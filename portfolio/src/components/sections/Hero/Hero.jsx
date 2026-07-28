@@ -2,7 +2,7 @@ import "./Hero.css";
 import { useState, useEffect } from "react";
 
 import HeroImage from "../../../assets/images/hero.png";
-
+import resume from "../../../assets/resume/resume.pdf";
 import { FaLinkedinIn, FaGithub, FaWhatsapp } from "react-icons/fa";
 
 import { MdEmail } from "react-icons/md";
@@ -55,7 +55,7 @@ function Hero() {
                 </a>
 
                 <a
-                  href="/resume.pdf"
+                  href={resume}
                   target="_blank"
                   rel="noreferrer"
                   className="btn btn-primary"
