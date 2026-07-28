@@ -85,7 +85,7 @@ const Contact = () => {
 
               <div className="social-links">
                 <a
-                  href="hhttps://github.com/alisha-tech21"
+                  href="https://github.com/alisha-tech21"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="GitHub"
