@@ -134,29 +134,39 @@ main {
   display: inline-block;
 }
 
+.nav-links a {
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  position: relative;
+  display: inline-block;
+}
+
 .nav-links a:hover {
+  color: #a855f7;
+}
+
+.nav-links a.active {
   color: #a855f7;
 }
 
 .nav-links a::after {
   content: "";
-
   position: absolute;
-
   bottom: -8px;
-
   left: 0;
-
   width: 0;
-
   height: 2px;
-
   background: #a855f7;
-
-  transition: 0.3s;
+  transition: 0.3s ease;
 }
 
 .nav-links a:hover::after {
+  width: 100%;
+}
+
+.nav-links a.active::after {
   width: 100%;
 }
 
