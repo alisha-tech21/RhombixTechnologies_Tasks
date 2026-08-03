@@ -3,10 +3,11 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
-const mongoSanitize = require("express-mongo-sanitize");
+const mongoSanitizeBody = require("./middleware/sanitize");
 require("dotenv").config();
 const connectDB = require("./config/db");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
+const authRoutes = require("./routes/authRoutes");
 
 connectDB();
 const app = express();
@@ -22,8 +23,7 @@ app.use(
 
 app.use(express.json({ limit: "10kb" }));
 
-app.use(mongoSanitize());
-
+app.use(mongoSanitizeBody);
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
@@ -38,7 +38,7 @@ app.use(generalLimiter);
 app.get("/", (req, res) => {
   res.send("🚀 Connectify Backend is Running...");
 });
-
+app.use("/api/auth", authRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
