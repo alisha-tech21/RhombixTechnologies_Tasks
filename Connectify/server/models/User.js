@@ -45,7 +45,25 @@ const userSchema = new mongoose.Schema(
 
     emailVerificationToken: String,
     emailVerificationExpire: Date,
+
+    // Profile & social fields
+    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+
+    privacy: {
+      profileVisibility: {
+        type: String,
+        enum: ["public", "friends", "private"],
+        default: "public",
+      },
+      postsVisibility: {
+        type: String,
+        enum: ["public", "friends", "private"],
+        default: "public",
+      },
+    },
   },
+
   { timestamps: true },
 );
 
