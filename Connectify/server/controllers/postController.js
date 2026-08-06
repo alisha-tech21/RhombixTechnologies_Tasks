@@ -1,6 +1,7 @@
 const Post = require("../models/Post");
 const Comment = require("../models/Comment");
 const User = require("../models/User");
+const Notification = require("../models/Notification");
 const { emitToUser, emitToAll } = require("../socket/socketServer");
 
 // @desc    Create a new post
@@ -118,12 +119,20 @@ const toggleLike = async (req, res, next) => {
       post.likes.push(req.user._id);
 
       if (!post.user.equals(req.user._id)) {
-        emitToUser(post.user, "notification", {
+        const notification = await Notification.create({
+          recipient: post.user,
+          sender: req.user._id,
           type: "like",
+          post: post._id,
           message: `${req.user.name} liked your post`,
-          postId: post._id,
-          from: { _id: req.user._id, name: req.user.name },
         });
+
+        const populatedNotification = await notification.populate(
+          "sender",
+          "name profilePicture",
+        );
+
+        emitToUser(post.user, "notification", populatedNotification);
       }
     }
 
