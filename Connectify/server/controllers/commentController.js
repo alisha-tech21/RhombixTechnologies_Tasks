@@ -1,5 +1,6 @@
 const Comment = require("../models/Comment");
 const Post = require("../models/Post");
+const Notification = require("../models/Notification");
 const { emitToUser, emitToAll } = require("../socket/socketServer");
 
 // @desc    Add a comment to a post
@@ -35,12 +36,20 @@ const addComment = async (req, res, next) => {
     );
 
     if (!post.user.equals(req.user._id)) {
-      emitToUser(post.user, "notification", {
+      const notification = await Notification.create({
+        recipient: post.user,
+        sender: req.user._id,
         type: "comment",
+        post: post._id,
         message: `${req.user.name} commented on your post`,
-        postId: post._id,
-        from: { _id: req.user._id, name: req.user.name },
       });
+
+      const populatedNotification = await notification.populate(
+        "sender",
+        "name profilePicture",
+      );
+
+      emitToUser(post.user, "notification", populatedNotification);
     }
 
     emitToAll("new_comment", {
