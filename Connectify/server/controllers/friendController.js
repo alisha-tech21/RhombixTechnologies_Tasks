@@ -1,4 +1,6 @@
 const FriendRequest = require("../models/FriendRequest");
+const Notification = require("../models/Notification");
+const { emitToUser } = require("../socket/socketServer");
 const User = require("../models/User");
 
 // @desc    Send a friend request
@@ -52,6 +54,18 @@ const sendFriendRequest = async (req, res, next) => {
       sender: senderId,
       receiver: receiverId,
     });
+    const notification = await Notification.create({
+      recipient: receiverId,
+      sender: senderId,
+      type: "friend_request",
+      message: `${req.user.name} sent you a friend request`,
+    });
+
+    const populatedNotification = await notification.populate(
+      "sender",
+      "name profilePicture",
+    );
+    emitToUser(receiverId, "notification", populatedNotification);
 
     res.status(201).json({ success: true, request });
   } catch (error) {
@@ -90,6 +104,19 @@ const acceptFriendRequest = async (req, res, next) => {
     await User.findByIdAndUpdate(request.receiver, {
       $addToSet: { friends: request.sender },
     });
+
+    const notification = await Notification.create({
+      recipient: request.sender,
+      sender: req.user._id,
+      type: "friend_accept",
+      message: `${req.user.name} accepted your friend request`,
+    });
+
+    const populatedNotification = await notification.populate(
+      "sender",
+      "name profilePicture",
+    );
+    emitToUser(request.sender, "notification", populatedNotification);
 
     res.status(200).json({ success: true, message: "Friend request accepted" });
   } catch (error) {
