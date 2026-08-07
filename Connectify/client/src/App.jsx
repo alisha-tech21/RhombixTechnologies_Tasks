@@ -1,20 +1,32 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
-import Home from "./pages/Home/Home";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
-import Profile from "./pages/Profile/Profile";
+import Home from "./pages/Home/Home";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 
 function App() {
   return (
-    <BrowserRouter>
+    <>
+      <Toaster position="top-center" />
+
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
+
+        {/* Protected route */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-    </BrowserRouter>
+    </>
   );
 }
 
