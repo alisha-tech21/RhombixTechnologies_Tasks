@@ -9,20 +9,33 @@ const generateToken = require("../utils/generateToken");
 
 const registerUser = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, username, email, password, bio, skills } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !username || !email || !password) {
       res.status(400);
-      throw new Error("Please provide name, email, and password");
+      throw new Error("Please provide name, username, email, and password");
     }
 
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({
+      $or: [{ email }, { username: username.toLowerCase() }],
+    });
     if (userExists) {
       res.status(400);
-      throw new Error("User already exists with this email");
+      throw new Error(
+        userExists.email === email
+          ? "User already exists with this email"
+          : "Username is already taken",
+      );
     }
 
-    const user = await User.create({ name, email, password });
+    const user = await User.create({
+      name,
+      username: username.toLowerCase(),
+      email,
+      password,
+      bio: bio || "",
+      skills: Array.isArray(skills) ? skills : [],
+    });
 
     // Raw verification token (jayega email mein)
     const verifyToken = crypto.randomBytes(32).toString("hex");
