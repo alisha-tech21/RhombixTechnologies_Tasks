@@ -66,7 +66,7 @@ const userSchema = new mongoose.Schema(
     // Profile & social fields
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-
+    savedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
     privacy: {
       profileVisibility: {
         type: String,

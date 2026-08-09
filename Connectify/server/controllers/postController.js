@@ -154,7 +154,77 @@ const toggleLike = async (req, res, next) => {
     next(error);
   }
 };
+// @desc    Toggle save/unsave a post (bookmark)
+// @route   PUT /api/posts/:id/save
+// @access  Private
+const toggleSavePost = async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      res.status(404);
+      throw new Error("Post not found");
+    }
 
+    const user = await User.findById(req.user._id);
+    const alreadySaved = user.savedPosts.some((id) => id.equals(post._id));
+
+    if (alreadySaved) {
+      user.savedPosts = user.savedPosts.filter((id) => !id.equals(post._id));
+    } else {
+      user.savedPosts.push(post._id);
+    }
+
+    await user.save();
+    res.status(200).json({ success: true, saved: !alreadySaved });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get all saved posts
+// @route   GET /api/posts/saved/all
+// @access  Private
+const getSavedPosts = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id).populate({
+      path: "savedPosts",
+      populate: { path: "user", select: "name profilePicture" },
+    });
+    res.status(200).json({ success: true, posts: user.savedPosts });
+  } catch (error) {
+    next(error);
+  }
+};
+// @desc    Update own post (text and visibility only)
+// @route   PUT /api/posts/:id
+// @access  Private
+const updatePost = async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      res.status(404);
+      throw new Error("Post not found");
+    }
+
+    if (!post.user.equals(req.user._id)) {
+      res.status(403);
+      throw new Error("You can only edit your own posts");
+    }
+
+    const { text, visibility } = req.body;
+
+    if (text !== undefined) post.text = text;
+    if (visibility !== undefined) post.visibility = visibility;
+
+    await post.save();
+
+    const populatedPost = await post.populate("user", "name profilePicture");
+    res.status(200).json({ success: true, post: populatedPost });
+  } catch (error) {
+    next(error);
+  }
+};
 // @desc    Delete own post
 // @route   DELETE /api/posts/:id
 // @access  Private
@@ -184,5 +254,47 @@ const deletePost = async (req, res, next) => {
     next(error);
   }
 };
+// @desc    Get public posts from everyone (discovery feed), sorted by popularity
+// @route   GET /api/posts/explore
+// @access  Private
+const getExplorePosts = async (req, res, next) => {
+  try {
+    const currentUser = await User.findById(req.user._id);
 
-module.exports = { createPost, getFeed, getPostById, toggleLike, deletePost };
+    // Find users who have blocked me, so their posts don't show either
+    const usersWhoBlockedMe = await User.find({
+      blockedUsers: req.user._id,
+    }).select("_id");
+    const blockedIds = [
+      ...currentUser.blockedUsers,
+      ...usersWhoBlockedMe.map((u) => u._id),
+    ];
+
+    const posts = await Post.find({
+      visibility: "public",
+      user: { $nin: [...blockedIds, req.user._id] }, // exclude blocked users and my own posts
+    })
+      .populate("user", "name profilePicture")
+      .sort({ createdAt: -1 })
+      .limit(60);
+
+    // Trending-ish: most liked first among recent posts
+    const sorted = posts.sort((a, b) => b.likes.length - a.likes.length);
+
+    res.status(200).json({ success: true, posts: sorted });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createPost,
+  getFeed,
+  getExplorePosts,
+  getPostById,
+  toggleLike,
+  updatePost,
+  deletePost,
+  toggleSavePost,
+  getSavedPosts,
+};
