@@ -6,13 +6,14 @@ import socket from "../../services/socket";
 import { getAvatarUrl } from "../../utils/avatar";
 import "../../styles/posts.css";
 
-const mediaUrl = (path) => `${import.meta.env.VITE_SOCKET_URL}${path}`;
+const INITIAL_VISIBLE = 3;
 
 export default function CommentSection({ postId, onCommentAdded }) {
   const { user } = useAuth();
   const [comments, setComments] = useState([]);
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
 
   useEffect(() => {
     api
@@ -43,23 +44,41 @@ export default function CommentSection({ postId, onCommentAdded }) {
     }
   };
 
+  // Show the most recent comments first, but reveal older ones on "see more"
+  const reversedComments = [...comments].reverse();
+  const visibleComments = reversedComments.slice(0, visibleCount);
+  const remaining = comments.length - visibleCount;
+
   return (
     <div className="comment-section">
       {loading ? (
         <p className="comment-loading">Loading comments...</p>
       ) : (
-        comments.map((c) => (
-          <div className="comment-item" key={c._id}>
-            <img
-              src={getAvatarUrl(user?.profilePicture, user?.name)}
-              alt={c.user.name}
-            />
-            <div className="comment-bubble">
-              <p className="comment-author">{c.user.name}</p>
-              <p className="comment-text">{c.text}</p>
-            </div>
-          </div>
-        ))
+        <>
+          {visibleComments
+            .filter((c) => c.user)
+            .map((c) => (
+              <div className="comment-item" key={c._id}>
+                <img
+                  src={getAvatarUrl(c.user.profilePicture, c.user.name)}
+                  alt={c.user.name}
+                />
+                <div className="comment-bubble">
+                  <p className="comment-author">{c.user.name}</p>
+                  <p className="comment-text">{c.text}</p>
+                </div>
+              </div>
+            ))}
+
+          {remaining > 0 && (
+            <button
+              className="see-more-comments-btn"
+              onClick={() => setVisibleCount((v) => v + 10)}
+            >
+              See {remaining} more comment{remaining > 1 ? "s" : ""}
+            </button>
+          )}
+        </>
       )}
 
       <form className="comment-form" onSubmit={submitComment}>

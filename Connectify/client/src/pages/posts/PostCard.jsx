@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Heart, MessageCircle, Share2 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../../services/api";
@@ -7,11 +8,10 @@ import socket from "../../services/socket";
 import { getAvatarUrl } from "../../utils/avatar";
 import CommentSection from "./CommentSection";
 import PostMenu from "./PostMenu";
-import { useNavigate } from "react-router-dom";
 import EditPostModal from "./EditPostModal";
 import "../../styles/posts.css";
 
-const mediaUrl = (path) => `${import.meta.env.VITE_SOCKET_URL}${path}`;
+const PREVIEW_LENGTH = 250;
 
 function timeAgo(date) {
   const seconds = Math.floor((new Date() - new Date(date)) / 1000);
@@ -33,16 +33,18 @@ export default function PostCard({ post: initialPost, onDeleted }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [post, setPost] = useState(initialPost);
+  if (!post.user) return null;
   const [likes, setLikes] = useState(initialPost.likes || []);
   const [commentsCount, setCommentsCount] = useState(
     initialPost.commentsCount || 0,
   );
   const [showComments, setShowComments] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [textExpanded, setTextExpanded] = useState(false);
 
   const liked = likes.includes(user?._id);
   const isOwner = post.user._id === user?._id;
-
+  const needsTruncate = post.text && post.text.length > PREVIEW_LENGTH + 40;
   useEffect(() => {
     const handleLikeUpdate = (data) => {
       if (data.postId === post._id) {
@@ -79,30 +81,18 @@ export default function PostCard({ post: initialPost, onDeleted }) {
     }
   };
 
-  const handleDelete = async () => {
-    if (!confirm("Delete this post?")) return;
-    try {
-      await api.delete(`/posts/${post._id}`);
-      onDeleted(post._id);
-      toast.success("Post deleted");
-    } catch {
-      toast.error("Failed to delete post");
-    }
-  };
-
   return (
     <div className="post-card">
       <div className="post-header">
         <img
           className="post-avatar"
-          src={getAvatarUrl(user?.profilePicture, user?.name)}
+          src={getAvatarUrl(post.user.profilePicture, post.user.name)}
           alt={post.user.name}
         />
         <div className="post-header-info">
           <p className="post-author">{post.user.name}</p>
           <p className="post-time">{timeAgo(post.createdAt)}</p>
         </div>
-
         <PostMenu
           post={post}
           isOwner={isOwner}
@@ -113,18 +103,31 @@ export default function PostCard({ post: initialPost, onDeleted }) {
 
       {post.text && (
         <p className="post-text">
-          {post.text.length > 220 && !post.expanded ? (
+          {needsTruncate && !textExpanded ? (
             <>
-              {post.text.slice(0, 220)}...{" "}
+              {post.text.slice(0, PREVIEW_LENGTH)}...{" "}
               <button
                 className="read-more-btn"
-                onClick={() => navigate(`/post/${post._id}`)}
+                onClick={() => setTextExpanded(true)}
               >
-                Read more
+                ...see more
               </button>
             </>
           ) : (
-            post.text
+            <>
+              {post.text}
+              {needsTruncate && (
+                <>
+                  {" "}
+                  <button
+                    className="read-more-btn"
+                    onClick={() => setTextExpanded(false)}
+                  >
+                    Show less
+                  </button>
+                </>
+              )}
+            </>
           )}
         </p>
       )}
@@ -132,12 +135,22 @@ export default function PostCard({ post: initialPost, onDeleted }) {
       {post.media?.length > 0 && (
         <div
           className={`post-media-grid count-${Math.min(post.media.length, 4)}`}
+          onClick={() => navigate(`/post/${post._id}`)}
+          style={{ cursor: "pointer" }}
         >
           {post.media.map((m, i) =>
             m.type === "video" ? (
-              <video key={i} src={mediaUrl(m.url)} controls />
+              <video
+                key={i}
+                src={`${import.meta.env.VITE_SOCKET_URL}${m.url}`}
+                controls
+              />
             ) : (
-              <img key={i} src={mediaUrl(m.url)} alt="" />
+              <img
+                key={i}
+                src={`${import.meta.env.VITE_SOCKET_URL}${m.url}`}
+                alt=""
+              />
             ),
           )}
         </div>
@@ -145,7 +158,14 @@ export default function PostCard({ post: initialPost, onDeleted }) {
 
       <div className="post-stats">
         <span>{likes.length > 0 && `❤️ ${likes.length}`}</span>
-        <span>{commentsCount > 0 && `${commentsCount} comments`}</span>
+        {commentsCount > 0 && (
+          <span
+            className="stats-link"
+            onClick={() => setShowComments((v) => !v)}
+          >
+            {commentsCount} comments
+          </span>
+        )}
       </div>
 
       <div className="post-actions">
@@ -174,7 +194,7 @@ export default function PostCard({ post: initialPost, onDeleted }) {
         <EditPostModal
           post={post}
           onClose={() => setIsEditing(false)}
-          onSaved={(updatedPost) => setPost(updatedPost)}
+          onSaved={(updated) => setPost(updated)}
         />
       )}
     </div>
