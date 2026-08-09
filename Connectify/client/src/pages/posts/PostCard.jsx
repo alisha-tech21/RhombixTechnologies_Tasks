@@ -1,17 +1,14 @@
 import { useState, useEffect } from "react";
-import {
-  Heart,
-  MessageCircle,
-  Share2,
-  Bookmark,
-  MoreHorizontal,
-  Trash2,
-} from "lucide-react";
+import { Heart, MessageCircle, Share2 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import socket from "../../services/socket";
+import { getAvatarUrl } from "../../utils/avatar";
 import CommentSection from "./CommentSection";
+import PostMenu from "./PostMenu";
+import { useNavigate } from "react-router-dom";
+import EditPostModal from "./EditPostModal";
 import "../../styles/posts.css";
 
 const mediaUrl = (path) => `${import.meta.env.VITE_SOCKET_URL}${path}`;
@@ -32,12 +29,16 @@ function timeAgo(date) {
   return "Just now";
 }
 
-export default function PostCard({ post, onDeleted }) {
+export default function PostCard({ post: initialPost, onDeleted }) {
   const { user } = useAuth();
-  const [likes, setLikes] = useState(post.likes || []);
-  const [commentsCount, setCommentsCount] = useState(post.commentsCount || 0);
+  const navigate = useNavigate();
+  const [post, setPost] = useState(initialPost);
+  const [likes, setLikes] = useState(initialPost.likes || []);
+  const [commentsCount, setCommentsCount] = useState(
+    initialPost.commentsCount || 0,
+  );
   const [showComments, setShowComments] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const liked = likes.includes(user?._id);
   const isOwner = post.user._id === user?._id;
@@ -94,11 +95,7 @@ export default function PostCard({ post, onDeleted }) {
       <div className="post-header">
         <img
           className="post-avatar"
-          src={
-            post.user.profilePicture
-              ? mediaUrl(post.user.profilePicture)
-              : "/default-avatar.png"
-          }
+          src={getAvatarUrl(user?.profilePicture, user?.name)}
           alt={post.user.name}
         />
         <div className="post-header-info">
@@ -106,26 +103,31 @@ export default function PostCard({ post, onDeleted }) {
           <p className="post-time">{timeAgo(post.createdAt)}</p>
         </div>
 
-        {isOwner && (
-          <div className="post-menu-wrap">
-            <button
-              className="post-menu-btn"
-              onClick={() => setMenuOpen((v) => !v)}
-            >
-              <MoreHorizontal size={18} />
-            </button>
-            {menuOpen && (
-              <div className="post-menu-dropdown">
-                <button onClick={handleDelete}>
-                  <Trash2 size={14} /> Delete post
-                </button>
-              </div>
-            )}
-          </div>
-        )}
+        <PostMenu
+          post={post}
+          isOwner={isOwner}
+          onEdit={() => setIsEditing(true)}
+          onDeleted={onDeleted}
+        />
       </div>
 
-      {post.text && <p className="post-text">{post.text}</p>}
+      {post.text && (
+        <p className="post-text">
+          {post.text.length > 220 && !post.expanded ? (
+            <>
+              {post.text.slice(0, 220)}...{" "}
+              <button
+                className="read-more-btn"
+                onClick={() => navigate(`/post/${post._id}`)}
+              >
+                Read more
+              </button>
+            </>
+          ) : (
+            post.text
+          )}
+        </p>
+      )}
 
       {post.media?.length > 0 && (
         <div
@@ -159,16 +161,20 @@ export default function PostCard({ post, onDeleted }) {
           <Share2 size={17} />
           Share
         </button>
-        <button>
-          <Bookmark size={17} />
-          Save
-        </button>
       </div>
 
       {showComments && (
         <CommentSection
           postId={post._id}
           onCommentAdded={() => setCommentsCount((c) => c + 1)}
+        />
+      )}
+
+      {isEditing && (
+        <EditPostModal
+          post={post}
+          onClose={() => setIsEditing(false)}
+          onSaved={(updatedPost) => setPost(updatedPost)}
         />
       )}
     </div>

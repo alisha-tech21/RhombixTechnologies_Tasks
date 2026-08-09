@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import socket from "../services/socket";
 import api from "../services/api";
 
 const AuthContext = createContext();
@@ -15,7 +16,11 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       api
         .get("/auth/me")
-        .then((res) => setUser(res.data.user))
+        .then((res) => {
+          setUser(res.data.user);
+          socket.connect();
+          socket.emit("register", res.data.user._id);
+        })
         .catch(() => {
           localStorage.removeItem("token");
           setUser(null);
@@ -31,6 +36,8 @@ export const AuthProvider = ({ children }) => {
     const res = await api.post("/auth/login", { email, password });
     localStorage.setItem("token", res.data.token);
     setUser(res.data);
+    socket.connect();
+    socket.emit("register", res.data._id);
     return res.data;
   };
 
@@ -38,6 +45,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
+    socket.disconnect();
   };
 
   const value = { user, setUser, login, logout, loading };

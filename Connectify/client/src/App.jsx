@@ -7,6 +7,8 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import Home from "./pages/Home/Home";
+import Explore from "./pages/Explore/Explore";
+import PostDetail from "./pages/posts/PostDetail";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 
 function App() {
@@ -22,6 +24,22 @@ function App() {
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
         {/* Protected route */}
+        <Route
+          path="/post/:postId"
+          element={
+            <ProtectedRoute>
+              <PostDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/explore"
+          element={
+            <ProtectedRoute>
+              <Explore />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/"
           element={
