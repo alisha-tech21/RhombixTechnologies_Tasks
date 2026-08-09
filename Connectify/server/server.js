@@ -24,8 +24,11 @@ const httpServer = http.createServer(app);
 
 initSocket(httpServer);
 
-app.use(helmet());
-
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  }),
+);
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
