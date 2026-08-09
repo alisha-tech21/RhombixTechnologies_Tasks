@@ -272,14 +272,15 @@ const getExplorePosts = async (req, res, next) => {
 
     const posts = await Post.find({
       visibility: "public",
-      user: { $nin: [...blockedIds, req.user._id] }, // exclude blocked users and my own posts
+      user: { $nin: [...blockedIds, req.user._id] },
     })
       .populate("user", "name profilePicture")
       .sort({ createdAt: -1 })
       .limit(60);
 
-    // Trending-ish: most liked first among recent posts
-    const sorted = posts.sort((a, b) => b.likes.length - a.likes.length);
+    // Skip posts whose author account no longer exists (orphaned data)
+    const validPosts = posts.filter((p) => p.user);
+    const sorted = validPosts.sort((a, b) => b.likes.length - a.likes.length);
 
     res.status(200).json({ success: true, posts: sorted });
   } catch (error) {

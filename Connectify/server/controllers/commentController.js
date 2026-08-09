@@ -73,7 +73,10 @@ const getComments = async (req, res, next) => {
       .populate("user", "name profilePicture")
       .sort({ createdAt: 1 });
 
-    res.status(200).json({ success: true, comments });
+    // Skip comments whose author account no longer exists (orphaned data)
+    const validComments = comments.filter((c) => c.user);
+
+    res.status(200).json({ success: true, comments: validComments });
   } catch (error) {
     next(error);
   }

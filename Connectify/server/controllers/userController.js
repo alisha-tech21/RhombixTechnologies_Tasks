@@ -43,13 +43,21 @@ const getUserProfile = async (req, res, next) => {
       user: {
         _id: user._id,
         name: user.name,
+        username: user.username,
         bio: user.bio,
         profilePicture: user.profilePicture,
         coverPhoto: user.coverPhoto,
+        skills: user.skills,
+        professionalTitle: user.professionalTitle,
+        location: user.location,
+        website: user.website,
+        githubUrl: user.githubUrl,
+        linkedinUrl: user.linkedinUrl,
+        education: user.education,
+        experience: user.experience,
         friendsCount: user.friends.length,
         isSelf,
         isFriend,
-        // Privacy settings sirf khud ko dikhengi, doosron ko nahi
         privacy: isSelf ? user.privacy : undefined,
         createdAt: user.createdAt,
       },
@@ -64,7 +72,19 @@ const getUserProfile = async (req, res, next) => {
 // @access  Private
 const updateProfile = async (req, res, next) => {
   try {
-    const { name, bio } = req.body;
+    const {
+      name,
+      bio,
+      skills,
+      professionalTitle,
+      location,
+      website,
+      githubUrl,
+      linkedinUrl,
+      education,
+      experience,
+    } = req.body;
+
     const user = await User.findById(req.user._id);
 
     if (name !== undefined) {
@@ -83,6 +103,18 @@ const updateProfile = async (req, res, next) => {
       user.bio = bio;
     }
 
+    if (skills !== undefined) user.skills = Array.isArray(skills) ? skills : [];
+    if (professionalTitle !== undefined)
+      user.professionalTitle = professionalTitle;
+    if (location !== undefined) user.location = location;
+    if (website !== undefined) user.website = website;
+    if (githubUrl !== undefined) user.githubUrl = githubUrl;
+    if (linkedinUrl !== undefined) user.linkedinUrl = linkedinUrl;
+    if (education !== undefined)
+      user.education = Array.isArray(education) ? education : [];
+    if (experience !== undefined)
+      user.experience = Array.isArray(experience) ? experience : [];
+
     await user.save();
 
     res.status(200).json({
@@ -90,9 +122,18 @@ const updateProfile = async (req, res, next) => {
       user: {
         _id: user._id,
         name: user.name,
+        username: user.username,
         bio: user.bio,
         profilePicture: user.profilePicture,
         coverPhoto: user.coverPhoto,
+        skills: user.skills,
+        professionalTitle: user.professionalTitle,
+        location: user.location,
+        website: user.website,
+        githubUrl: user.githubUrl,
+        linkedinUrl: user.linkedinUrl,
+        education: user.education,
+        experience: user.experience,
       },
     });
   } catch (error) {
