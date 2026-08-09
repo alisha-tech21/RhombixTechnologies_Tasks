@@ -3,6 +3,7 @@ import { Send } from "lucide-react";
 import api from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import socket from "../../services/socket";
+import { getAvatarUrl } from "../../utils/avatar";
 import "../../styles/posts.css";
 
 const mediaUrl = (path) => `${import.meta.env.VITE_SOCKET_URL}${path}`;
@@ -50,11 +51,7 @@ export default function CommentSection({ postId, onCommentAdded }) {
         comments.map((c) => (
           <div className="comment-item" key={c._id}>
             <img
-              src={
-                c.user.profilePicture
-                  ? mediaUrl(c.user.profilePicture)
-                  : "/default-avatar.png"
-              }
+              src={getAvatarUrl(user?.profilePicture, user?.name)}
               alt={c.user.name}
             />
             <div className="comment-bubble">
@@ -67,11 +64,7 @@ export default function CommentSection({ postId, onCommentAdded }) {
 
       <form className="comment-form" onSubmit={submitComment}>
         <img
-          src={
-            user?.profilePicture
-              ? mediaUrl(user.profilePicture)
-              : "/default-avatar.png"
-          }
+          src={getAvatarUrl(user?.profilePicture, user?.name)}
           alt={user?.name}
         />
         <input

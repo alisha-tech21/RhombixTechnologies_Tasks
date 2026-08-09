@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import { getAvatarUrl } from "../../utils/avatar";
 import "../../styles/layout.css";
 
 export default function RightSidebar() {
@@ -33,11 +34,7 @@ export default function RightSidebar() {
           requests.map((req) => (
             <div className="widget-person" key={req._id}>
               <img
-                src={
-                  req.sender.profilePicture
-                    ? `${import.meta.env.VITE_SOCKET_URL}${req.sender.profilePicture}`
-                    : "/default-avatar.png"
-                }
+                src={getAvatarUrl(user?.profilePicture, user?.name)}
                 alt={req.sender.name}
               />
               <div className="widget-person-info">
