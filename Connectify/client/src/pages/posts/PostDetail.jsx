@@ -79,6 +79,17 @@ export default function PostDetail() {
     );
   }
 
+  // Defensive: skip if the post author's account was deleted
+  if (!post.user) {
+    return (
+      <MainLayout>
+        <p style={{ textAlign: "center", color: "#94a3b8", marginTop: 40 }}>
+          This post is no longer available.
+        </p>
+      </MainLayout>
+    );
+  }
+
   return (
     <MainLayout>
       <button className="back-to-feed-btn" onClick={() => navigate(-1)}>
