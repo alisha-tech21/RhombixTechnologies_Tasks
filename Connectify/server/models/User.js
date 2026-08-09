@@ -49,7 +49,50 @@ const userSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+
+    professionalTitle: {
+      type: String,
+      default: "",
+      maxlength: 100,
+    },
+    location: {
+      type: String,
+      default: "",
+      maxlength: 100,
+    },
+    website: {
+      type: String,
+      default: "",
+    },
+    githubUrl: {
+      type: String,
+      default: "",
+    },
+    linkedinUrl: {
+      type: String,
+      default: "",
+    },
+
+    education: [
+      {
+        degree: { type: String, required: true },
+        school: { type: String, required: true },
+        year: { type: String, required: true },
+      },
+    ],
+
+    experience: [
+      {
+        jobTitle: { type: String, required: true },
+        company: { type: String, required: true },
+        duration: { type: String, required: true },
+      },
+    ],
     profilePicture: {
+      type: String,
+      default: "",
+    },
+    coverPhoto: {
       type: String,
       default: "",
     },
