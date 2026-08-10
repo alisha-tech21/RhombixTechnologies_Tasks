@@ -33,7 +33,6 @@ export default function PostCard({ post: initialPost, onDeleted }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [post, setPost] = useState(initialPost);
-  if (!post.user) return null;
   const [likes, setLikes] = useState(initialPost.likes || []);
   const [commentsCount, setCommentsCount] = useState(
     initialPost.commentsCount || 0,
@@ -41,6 +40,8 @@ export default function PostCard({ post: initialPost, onDeleted }) {
   const [showComments, setShowComments] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [textExpanded, setTextExpanded] = useState(false);
+
+  if (!post.user) return null;
 
   const liked = likes.includes(user?._id);
   const isOwner = post.user._id === user?._id;
@@ -88,9 +89,17 @@ export default function PostCard({ post: initialPost, onDeleted }) {
           className="post-avatar"
           src={getAvatarUrl(post.user.profilePicture, post.user.name)}
           alt={post.user.name}
+          onClick={() => navigate(`/profile/${post.user._id}`)}
+          style={{ cursor: "pointer" }}
         />
         <div className="post-header-info">
-          <p className="post-author">{post.user.name}</p>
+          <p
+            className="post-author"
+            onClick={() => navigate(`/profile/${post.user._id}`)}
+            style={{ cursor: "pointer" }}
+          >
+            {post.user.name}
+          </p>
           <p className="post-time">{timeAgo(post.createdAt)}</p>
         </div>
         <PostMenu

@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgotPassword";
@@ -11,6 +10,9 @@ import Profile from "./pages/Profile/Profile";
 import EditProfile from "./pages/Profile/EditProfile";
 import Explore from "./pages/Explore/Explore";
 import PostDetail from "./pages/posts/PostDetail";
+import Friends from "./pages/Friends/Friends";
+import FriendRequests from "./pages/Friends/FriendRequests";
+import Notifications from "./pages/Notifications/Notifications";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 
 function App() {
@@ -65,6 +67,30 @@ function App() {
           element={
             <ProtectedRoute>
               <Explore />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/friends"
+          element={
+            <ProtectedRoute>
+              <Friends />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/friends/requests"
+          element={
+            <ProtectedRoute>
+              <FriendRequests />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <Notifications />
             </ProtectedRoute>
           }
         />

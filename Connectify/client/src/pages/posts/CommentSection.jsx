@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Send } from "lucide-react";
 import api from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
@@ -10,6 +11,7 @@ const INITIAL_VISIBLE = 3;
 
 export default function CommentSection({ postId, onCommentAdded }) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [comments, setComments] = useState([]);
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(true);
@@ -62,9 +64,17 @@ export default function CommentSection({ postId, onCommentAdded }) {
                 <img
                   src={getAvatarUrl(c.user.profilePicture, c.user.name)}
                   alt={c.user.name}
+                  onClick={() => navigate(`/profile/${c.user._id}`)}
+                  style={{ cursor: "pointer" }}
                 />
                 <div className="comment-bubble">
-                  <p className="comment-author">{c.user.name}</p>
+                  <p
+                    className="comment-author"
+                    onClick={() => navigate(`/profile/${c.user._id}`)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {c.user.name}
+                  </p>
                   <p className="comment-text">{c.text}</p>
                 </div>
               </div>

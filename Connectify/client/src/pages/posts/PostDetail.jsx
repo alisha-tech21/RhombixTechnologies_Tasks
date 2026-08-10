@@ -102,9 +102,17 @@ export default function PostDetail() {
             className="post-avatar"
             src={getAvatarUrl(post.user.profilePicture, post.user.name)}
             alt={post.user.name}
+            onClick={() => navigate(`/profile/${post.user._id}`)}
+            style={{ cursor: "pointer" }}
           />
           <div className="post-header-info">
-            <p className="post-author">{post.user.name}</p>
+            <p
+              className="post-author"
+              onClick={() => navigate(`/profile/${post.user._id}`)}
+              style={{ cursor: "pointer" }}
+            >
+              {post.user.name}
+            </p>
             <p className="post-time">{timeAgo(post.createdAt)}</p>
           </div>
           <PostMenu
