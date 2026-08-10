@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Home,
@@ -10,19 +11,47 @@ import {
   MapPin,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import { getAvatarUrl } from "../../utils/avatar";
+import api from "../../services/api";
+import socket from "../../services/socket";
 import "../../styles/layout.css";
+import { getAvatarUrl } from "../../utils/avatar";
 
 export default function Sidebar() {
   const { user } = useAuth();
   const location = useLocation();
+  const [requestCount, setRequestCount] = useState(0);
+
+  useEffect(() => {
+    const fetchCount = () => {
+      api
+        .get("/friends/requests/received")
+        .then((res) => setRequestCount(res.data.requests.length))
+        .catch(() => {});
+    };
+
+    fetchCount();
+
+    const handleNewRequest = () => setRequestCount((prev) => prev + 1);
+    socket.on("friend_request", handleNewRequest);
+    window.addEventListener("friend-request-count-changed", fetchCount);
+
+    return () => {
+      socket.off("friend_request", handleNewRequest);
+      window.removeEventListener("friend-request-count-changed", fetchCount);
+    };
+  }, []);
 
   const navItems = [
     { icon: Home, label: "Home", path: "/" },
     { icon: User, label: "Profile", path: `/profile/${user?._id}` },
     { icon: Compass, label: "Explore", path: "/explore" },
     { icon: Users, label: "Friends", path: "/friends" },
-    { icon: UserPlus, label: "Friend Requests", path: "/friends/requests" },
+    {
+      icon: UserPlus,
+      label: "Friend Requests",
+      path: "/friends/requests",
+      badge: requestCount,
+    },
     { icon: Bookmark, label: "Saved Posts", path: "/saved" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];
@@ -77,7 +106,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="sidebar-nav">
-        {navItems.map(({ icon: Icon, label, path }) => (
+        {navItems.map(({ icon: Icon, label, path, badge }) => (
           <Link
             key={path}
             to={path}
@@ -85,6 +114,7 @@ export default function Sidebar() {
           >
             <Icon size={18} />
             <span>{label}</span>
+            {badge > 0 && <span className="sidebar-badge">{badge}</span>}
           </Link>
         ))}
       </nav>

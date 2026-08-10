@@ -34,7 +34,7 @@ export default function RightSidebar() {
           requests.map((req) => (
             <div className="widget-person" key={req._id}>
               <img
-                src={getAvatarUrl(user?.profilePicture, user?.name)}
+                src={getAvatarUrl(req.sender.profilePicture, req.sender.name)}
                 alt={req.sender.name}
               />
               <div className="widget-person-info">

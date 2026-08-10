@@ -170,6 +170,24 @@
   height: 100%;
   background: linear-gradient(135deg, #312e81, #4f46e5, #7c3aed);
 }
+.sidebar-link {
+  position: relative;
+}
+
+.sidebar-badge {
+  margin-left: auto;
+  background: #dc2626;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 19px;
+  height: 19px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+}
 
 /* Profile picture */
 
