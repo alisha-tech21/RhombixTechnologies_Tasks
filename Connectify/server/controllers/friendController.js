@@ -56,8 +56,9 @@ const sendFriendRequest = async (req, res, next) => {
     });
     const notification = await Notification.create({
       recipient: receiverId,
-      sender: senderId,
+      sender: req.user._id,
       type: "friend_request",
+      friendRequest: request._id,
       message: `${req.user.name} sent you a friend request`,
     });
 
@@ -246,6 +247,61 @@ const getFriendsList = async (req, res, next) => {
     next(error);
   }
 };
+// @desc    Get suggested users to connect with (not friends, no pending request, not blocked)
+// @route   GET /api/friends/suggestions
+// @access  Private
+const getSuggestions = async (req, res, next) => {
+  try {
+    const currentUser = await User.findById(req.user._id);
+
+    // Find all pending/accepted request pairs involving me, so I can exclude those users
+    const existingRequests = await FriendRequest.find({
+      $or: [{ sender: req.user._id }, { receiver: req.user._id }],
+    });
+
+    const excludedIds = new Set([
+      req.user._id.toString(),
+      ...currentUser.friends.map((id) => id.toString()),
+      ...currentUser.blockedUsers.map((id) => id.toString()),
+      ...existingRequests.map((r) =>
+        r.sender.toString() === req.user._id.toString()
+          ? r.receiver.toString()
+          : r.sender.toString(),
+      ),
+    ]);
+
+    // Also exclude users who have blocked me
+    const usersWhoBlockedMe = await User.find({
+      blockedUsers: req.user._id,
+    }).select("_id");
+    usersWhoBlockedMe.forEach((u) => excludedIds.add(u._id.toString()));
+
+    const suggestions = await User.find({
+      _id: { $nin: Array.from(excludedIds) },
+      isVerified: true,
+    })
+      .select("name username profilePicture bio professionalTitle friends")
+      .limit(20);
+
+    // Rank by mutual friends count (people you likely actually know)
+    const withMutualCount = suggestions.map((u) => {
+      const mutualCount = u.friends.filter((fid) =>
+        currentUser.friends.some((myFriendId) => myFriendId.equals(fid)),
+      ).length;
+      return {
+        ...u.toObject(),
+        mutualFriendsCount: mutualCount,
+        friends: undefined,
+      };
+    });
+
+    withMutualCount.sort((a, b) => b.mutualFriendsCount - a.mutualFriendsCount);
+
+    res.status(200).json({ success: true, suggestions: withMutualCount });
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   sendFriendRequest,
@@ -256,4 +312,5 @@ module.exports = {
   getReceivedRequests,
   getSentRequests,
   getFriendsList,
+  getSuggestions,
 };

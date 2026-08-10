@@ -4,6 +4,12 @@ const User = require("../models/User");
 const Notification = require("../models/Notification");
 const { emitToUser, emitToAll } = require("../socket/socketServer");
 
+// Truncates text for use inside notification messages
+const truncateText = (text, length = 50) => {
+  if (!text) return "";
+  return text.length > length ? text.slice(0, length) + "..." : text;
+};
+
 // @desc    Create a new post
 // @route   POST /api/posts
 // @access  Private
@@ -119,12 +125,18 @@ const toggleLike = async (req, res, next) => {
       post.likes.push(req.user._id);
 
       if (!post.user.equals(req.user._id)) {
+        const preview = post.text
+          ? `: "${truncateText(post.text)}"`
+          : post.media?.length > 0
+            ? " (photo/video)"
+            : "";
+
         const notification = await Notification.create({
           recipient: post.user,
           sender: req.user._id,
           type: "like",
           post: post._id,
-          message: `${req.user.name} liked your post`,
+          message: `${req.user.name} liked your post${preview}`,
         });
 
         const populatedNotification = await notification.populate(
