@@ -18,6 +18,12 @@ const commentSchema = new mongoose.Schema(
       trim: true,
       maxlength: 1000,
     },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    parentComment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+      default: null, // null = top-level comment, otherwise it's a reply
+    },
   },
   { timestamps: true },
 );

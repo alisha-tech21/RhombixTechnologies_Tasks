@@ -10,6 +10,7 @@ const {
   getReceivedRequests,
   getSentRequests,
   getFriendsList,
+  getSuggestions,
 } = require("../controllers/friendController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -24,6 +25,7 @@ router.delete("/:id", removeFriend);
 
 router.get("/requests/received", getReceivedRequests);
 router.get("/requests/sent", getSentRequests);
+router.get("/suggestions", getSuggestions);
 router.get("/", getFriendsList);
 
 module.exports = router;

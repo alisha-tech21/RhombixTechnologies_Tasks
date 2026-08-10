@@ -21,6 +21,10 @@ const notificationSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Post",
     },
+    friendRequest: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "FriendRequest",
+    },
     message: {
       type: String,
       required: true,
