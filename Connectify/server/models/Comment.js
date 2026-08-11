@@ -24,6 +24,16 @@ const commentSchema = new mongoose.Schema(
       ref: "Comment",
       default: null, // null = top-level comment, otherwise it's a reply
     },
+    parentComment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+      default: null,
+    },
+    replyToUser: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null, // jis user ko reply kiya gaya (mention ke liye)
+    },
   },
   { timestamps: true },
 );

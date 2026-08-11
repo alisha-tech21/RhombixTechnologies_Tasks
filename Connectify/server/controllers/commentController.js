@@ -41,6 +41,7 @@ const addComment = async (req, res, next) => {
       user: req.user._id,
       text: text.trim(),
       parentComment: parentComment || null,
+      replyToUser: parentDoc ? parentDoc.user : null,
     });
 
     post.commentsCount += 1;
@@ -89,6 +90,7 @@ const getComments = async (req, res, next) => {
   try {
     const comments = await Comment.find({ post: req.params.postId })
       .populate("user", "name profilePicture")
+      .populate("replyToUser", "name")
       .sort({ createdAt: 1 });
 
     const validComments = comments.filter((c) => c.user);
@@ -142,13 +144,11 @@ const toggleCommentLike = async (req, res, next) => {
       liked: !alreadyLiked,
     });
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        liked: !alreadyLiked,
-        likesCount: comment.likes.length,
-      });
+    res.status(200).json({
+      success: true,
+      liked: !alreadyLiked,
+      likesCount: comment.likes.length,
+    });
   } catch (error) {
     next(error);
   }
