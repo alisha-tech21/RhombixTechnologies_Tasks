@@ -29,7 +29,7 @@ function timeAgo(date) {
   return "Just now";
 }
 
-export default function PostCard({ post: initialPost, onDeleted }) {
+export default function PostCard({ post: initialPost, onDeleted, onUnsaved }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [post, setPost] = useState(initialPost);
@@ -107,6 +107,7 @@ export default function PostCard({ post: initialPost, onDeleted }) {
           isOwner={isOwner}
           onEdit={() => setIsEditing(true)}
           onDeleted={onDeleted}
+          onUnsaved={onUnsaved}
         />
       </div>
 
@@ -195,6 +196,7 @@ export default function PostCard({ post: initialPost, onDeleted }) {
       {showComments && (
         <CommentSection
           postId={post._id}
+          postOwnerId={post.user._id}
           onCommentAdded={() => setCommentsCount((c) => c + 1)}
         />
       )}

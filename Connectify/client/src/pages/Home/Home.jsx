@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import MainLayout from "../../components/layout/MainLayout";
-import CreatePostBox from "../posts/CreatePostBox";
-import PostCard from "../posts/PostCard";
+import PostCard from "../../components/posts/PostCard";
+import CreatePostBox from "../../components/posts/CreatePostBox";
 import api from "../../services/api";
 import socket from "../../services/socket";
 import "../../styles/posts.css";

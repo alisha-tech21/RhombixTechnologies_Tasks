@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Heart, MessageCircle, Share2 } from "lucide-react";
 import MainLayout from "../../components/layout/MainLayout";
-import CommentSection from "./CommentSection";
-import PostMenu from "./PostMenu";
-import EditPostModal from "./EditPostModal";
+import CommentSection from "../../components/posts/CommentSection";
+import PostMenu from "../../components/posts/PostMenu";
+import EditPostModal from "../../components/posts/EditPostModal";
 import api from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import { getAvatarUrl } from "../../utils/avatar";
@@ -122,9 +122,7 @@ export default function PostDetail() {
             onDeleted={() => navigate("/")}
           />
         </div>
-
         {post.text && <p className="post-text">{post.text}</p>}
-
         {post.media?.length > 0 && (
           <div
             className={`post-media-grid count-${Math.min(post.media.length, 4)}`}
@@ -146,11 +144,9 @@ export default function PostDetail() {
             )}
           </div>
         )}
-
         <div className="post-stats">
           <span>{likes.length > 0 && `❤️ ${likes.length}`}</span>
         </div>
-
         <div className="post-actions">
           <button className={liked ? "active" : ""} onClick={toggleLike}>
             <Heart size={17} fill={liked ? "#e11d48" : "none"} />
@@ -165,8 +161,11 @@ export default function PostDetail() {
             Share
           </button>
         </div>
-
-        <CommentSection postId={post._id} onCommentAdded={() => {}} />
+        <CommentSection
+          postId={post._id}
+          postOwnerId={post.user._id}
+          onCommentAdded={() => {}}
+        />{" "}
       </div>
 
       {isEditing && (
