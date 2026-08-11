@@ -1,7 +1,10 @@
 const User = require("../models/User");
 const fs = require("fs");
 const path = require("path");
-
+const Post = require("../models/Post");
+const Comment = require("../models/Comment");
+const FriendRequest = require("../models/FriendRequest");
+const Notification = require("../models/Notification");
 // @desc    Get a user's profile (respects privacy settings)
 // @route   GET /api/users/:id
 // @access  Private
@@ -305,6 +308,150 @@ const unblockUser = async (req, res, next) => {
   }
 };
 
+// @desc    Get my blocked users list
+// @route   GET /api/users/blocked/all
+// @access  Private
+const getBlockedUsers = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id).populate(
+      "blockedUsers",
+      "name profilePicture bio",
+    );
+    res.status(200).json({ success: true, blockedUsers: user.blockedUsers });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Change password (while logged in)
+// @route   PUT /api/users/change-password
+// @access  Private
+const changePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      res.status(400);
+      throw new Error("Please provide your current and new password");
+    }
+
+    if (newPassword.length < 6) {
+      res.status(400);
+      throw new Error("New password must be at least 6 characters");
+    }
+
+    const user = await User.findById(req.user._id).select("+password");
+
+    const isMatch = await user.matchPassword(currentPassword);
+    if (!isMatch) {
+      res.status(401);
+      throw new Error("Current password is incorrect");
+    }
+
+    user.password = newPassword; // pre-save hook hashes it automatically
+    await user.save();
+
+    res
+      .status(200)
+      .json({ success: true, message: "Password changed successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Export all my data as JSON
+// @route   GET /api/users/export-data
+// @access  Private
+const exportUserData = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id).select(
+      "-password -resetPasswordToken -resetPasswordExpire -emailVerificationToken -emailVerificationExpire",
+    );
+    const posts = await Post.find({ user: req.user._id });
+    const comments = await Comment.find({ user: req.user._id });
+    const friends = await User.findById(req.user._id).populate(
+      "friends",
+      "name email",
+    );
+
+    const exportPayload = {
+      profile: user,
+      posts,
+      comments,
+      friends: friends.friends,
+      exportedAt: new Date(),
+    };
+
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=connectify-data-export.json",
+    );
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).send(JSON.stringify(exportPayload, null, 2));
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Permanently delete my account and all associated data
+// @route   DELETE /api/users/account
+// @access  Private
+const deleteAccount = async (req, res, next) => {
+  try {
+    const { password } = req.body;
+
+    if (!password) {
+      res.status(400);
+      throw new Error("Please enter your password to confirm account deletion");
+    }
+
+    const user = await User.findById(req.user._id).select("+password");
+
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) {
+      res.status(401);
+      throw new Error("Incorrect password");
+    }
+
+    const userId = user._id;
+
+    // Capture post IDs before deleting them, so we can clean up other users' savedPosts references
+    const myPostIds = await Post.find({ user: userId }).distinct("_id");
+
+    await Post.deleteMany({ user: userId });
+    await Comment.deleteMany({ user: userId });
+    await FriendRequest.deleteMany({
+      $or: [{ sender: userId }, { receiver: userId }],
+    });
+    await Notification.deleteMany({
+      $or: [{ sender: userId }, { recipient: userId }],
+    });
+
+    // Remove this user from everyone else's friends/blocked lists, and their posts from savedPosts
+    await User.updateMany(
+      {},
+      {
+        $pull: {
+          friends: userId,
+          blockedUsers: userId,
+          savedPosts: { $in: myPostIds },
+        },
+      },
+    );
+
+    await user.deleteOne();
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Your account has been permanently deleted",
+      });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getUserProfile,
   updateProfile,
@@ -313,4 +460,8 @@ module.exports = {
   updatePrivacySettings,
   blockUser,
   unblockUser,
+  getBlockedUsers,
+  changePassword,
+  exportUserData,
+  deleteAccount,
 };
