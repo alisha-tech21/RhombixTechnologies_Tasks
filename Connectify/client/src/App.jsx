@@ -13,6 +13,8 @@ import PostDetail from "./pages/posts/PostDetail";
 import Friends from "./pages/Friends/Friends";
 import FriendRequests from "./pages/Friends/FriendRequests";
 import Notifications from "./pages/Notifications/Notifications";
+import SavedPosts from "./pages/posts/SavedPosts";
+import Settings from "./pages/Settings/Settings";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 
 function App() {
@@ -91,6 +93,22 @@ function App() {
           element={
             <ProtectedRoute>
               <Notifications />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/saved"
+          element={
+            <ProtectedRoute>
+              <SavedPosts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
             </ProtectedRoute>
           }
         />

@@ -11,10 +11,20 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 
-export default function PostMenu({ post, isOwner, onEdit, onDeleted }) {
+export default function PostMenu({
+  post,
+  isOwner,
+  onEdit,
+  onDeleted,
+  onUnsaved,
+}) {
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState(
+    user?.savedPosts?.includes(post._id) || false,
+  );
   const menuRef = useRef(null);
 
   // Close the dropdown when clicking anywhere outside it
@@ -45,6 +55,9 @@ export default function PostMenu({ post, isOwner, onEdit, onDeleted }) {
       const res = await api.put(`/posts/${post._id}/save`);
       setSaved(res.data.saved);
       toast.success(res.data.saved ? "Post saved" : "Removed from saved");
+      if (!res.data.saved && onUnsaved) {
+        onUnsaved(post._id);
+      }
     } catch {
       toast.error("Something went wrong");
     }
