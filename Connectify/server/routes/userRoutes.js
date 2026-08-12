@@ -13,6 +13,7 @@ const {
   changePassword,
   exportUserData,
   deleteAccount,
+  searchUsers,
 } = require("../controllers/userController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -29,6 +30,7 @@ router.delete("/account", deleteAccount);
 router.put("/profile", updateProfile);
 router.put("/profile-picture", upload.single("image"), uploadProfilePicture);
 router.put("/cover-photo", upload.single("image"), uploadCoverPhoto);
+router.get("/search", searchUsers);
 router.put("/privacy", updatePrivacySettings);
 router.put("/block/:id", blockUser);
 router.put("/unblock/:id", unblockUser);

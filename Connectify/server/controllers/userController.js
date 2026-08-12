@@ -143,6 +143,31 @@ const updateProfile = async (req, res, next) => {
     next(error);
   }
 };
+// @desc    Search users by name or username
+// @route   GET /api/users/search?q=...
+// @access  Private
+const searchUsers = async (req, res, next) => {
+  try {
+    const { q } = req.query;
+
+    if (!q || q.trim().length < 1) {
+      return res.status(200).json({ success: true, users: [] });
+    }
+
+    const regex = new RegExp(q.trim(), "i");
+
+    const users = await User.find({
+      _id: { $ne: req.user._id },
+      $or: [{ name: regex }, { username: regex }],
+    })
+      .select("name username profilePicture professionalTitle")
+      .limit(10);
+
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Helper — purani uploaded file ko disk se delete karta hai (jab naya replace ho)
 const deleteOldFile = (filePath) => {
@@ -441,12 +466,10 @@ const deleteAccount = async (req, res, next) => {
 
     await user.deleteOne();
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Your account has been permanently deleted",
-      });
+    res.status(200).json({
+      success: true,
+      message: "Your account has been permanently deleted",
+    });
   } catch (error) {
     next(error);
   }
@@ -464,4 +487,5 @@ module.exports = {
   changePassword,
   exportUserData,
   deleteAccount,
+  searchUsers,
 };

@@ -118,7 +118,18 @@ const acceptFriendRequest = async (req, res, next) => {
       "name profilePicture",
     );
     emitToUser(request.sender, "notification", populatedNotification);
+    await User.findByIdAndUpdate(request.sender, {
+      $addToSet: { friends: request.receiver },
+    });
+    await User.findByIdAndUpdate(request.receiver, {
+      $addToSet: { friends: request.sender },
+    });
 
+    // Remove the original "sent you a friend request" notification — it's now stale
+    await Notification.deleteMany({
+      type: "friend_request",
+      friendRequest: request._id,
+    });
     res.status(200).json({ success: true, message: "Friend request accepted" });
   } catch (error) {
     next(error);
@@ -149,6 +160,11 @@ const rejectFriendRequest = async (req, res, next) => {
 
     await request.deleteOne();
 
+    // Remove the original "sent you a friend request" notification here too
+    await Notification.deleteMany({
+      type: "friend_request",
+      friendRequest: request._id,
+    });
     res.status(200).json({ success: true, message: "Friend request rejected" });
   } catch (error) {
     next(error);
@@ -213,7 +229,9 @@ const getReceivedRequests = async (req, res, next) => {
       status: "pending",
     }).populate("sender", "name profilePicture");
 
-    res.status(200).json({ success: true, requests });
+    const validRequests = requests.filter((r) => r.sender);
+
+    res.status(200).json({ success: true, requests: validRequests });
   } catch (error) {
     next(error);
   }
@@ -229,7 +247,10 @@ const getSentRequests = async (req, res, next) => {
       status: "pending",
     }).populate("receiver", "name profilePicture");
 
-    res.status(200).json({ success: true, requests });
+    // Skip requests whose receiver account no longer exists
+    const validRequests = requests.filter((r) => r.receiver);
+
+    res.status(200).json({ success: true, requests: validRequests });
   } catch (error) {
     next(error);
   }
@@ -257,6 +278,7 @@ const getSuggestions = async (req, res, next) => {
     // Find all pending/accepted request pairs involving me, so I can exclude those users
     const existingRequests = await FriendRequest.find({
       $or: [{ sender: req.user._id }, { receiver: req.user._id }],
+      status: "pending",
     });
 
     const excludedIds = new Set([
