@@ -9,7 +9,11 @@ import {
   Pencil,
   GraduationCap,
   Briefcase,
+  MoreHorizontal,
+  UserX,
+  ShieldOff,
 } from "lucide-react";
+import { useRef } from "react";
 import toast from "react-hot-toast";
 import MainLayout from "../../components/layout/MainLayout";
 import api from "../../services/api";
@@ -26,6 +30,35 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [requestSent, setRequestSent] = useState(false);
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleBlock = async () => {
+    if (
+      !confirm(
+        `Block ${profile.name}? They won't be able to view your profile or contact you.`,
+      )
+    )
+      return;
+    try {
+      await api.put(`/users/block/${id}`);
+      toast.success(`${profile.name} has been blocked`);
+      navigate("/");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to block user");
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -115,19 +148,39 @@ export default function Profile() {
               >
                 <Pencil size={15} /> Edit Profile
               </button>
-            ) : profile.isFriend ? (
-              <button className="btn-secondary" disabled>
-                <MessageCircle size={15} /> Friends
-              </button>
             ) : (
-              <button
-                className="btn-primary"
-                onClick={sendFriendRequest}
-                disabled={requestSent}
-              >
-                <UserPlus size={15} />{" "}
-                {requestSent ? "Request Sent" : "Add Friend"}
-              </button>
+              <>
+                {profile.isFriend ? (
+                  <button className="btn-secondary" disabled>
+                    <MessageCircle size={15} /> Friends
+                  </button>
+                ) : (
+                  <button
+                    className="btn-primary"
+                    onClick={sendFriendRequest}
+                    disabled={requestSent}
+                  >
+                    <UserPlus size={15} />{" "}
+                    {requestSent ? "Request Sent" : "Add Friend"}
+                  </button>
+                )}
+
+                <div className="profile-menu-wrap" ref={menuRef}>
+                  <button
+                    className="profile-menu-btn"
+                    onClick={() => setMenuOpen((v) => !v)}
+                  >
+                    <MoreHorizontal size={18} />
+                  </button>
+                  {menuOpen && (
+                    <div className="profile-menu-dropdown">
+                      <button className="danger" onClick={handleBlock}>
+                        <UserX size={14} /> Block {profile.name}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           </div>
         </div>

@@ -73,7 +73,7 @@ export default function FriendRequests() {
   };
 
   return (
-    <MainLayout>
+    <MainLayout hideRightSidebar>
       <div className="friends-header">
         <h2>Friend Requests</h2>
       </div>
@@ -104,37 +104,42 @@ export default function FriendRequests() {
           <p className="friends-empty-state">No pending friend requests.</p>
         ) : (
           <div className="request-list">
-            {received.map((req) => (
-              <div className="request-row" key={req._id}>
-                <img
-                  className="friend-card-avatar sm"
-                  src={getAvatarUrl(req.sender.profilePicture, req.sender.name)}
-                  alt={req.sender.name}
-                  onClick={() => navigate(`/profile/${req.sender._id}`)}
-                />
-                <div
-                  className="request-row-info"
-                  onClick={() => navigate(`/profile/${req.sender._id}`)}
-                >
-                  <p>{req.sender.name}</p>
-                  <span>Wants to connect with you</span>
-                </div>
-                <div className="request-row-actions">
-                  <button
-                    className="btn-accept-full"
-                    onClick={() => acceptRequest(req._id)}
+            {received
+              .filter((req) => req.sender)
+              .map((req) => (
+                <div className="request-row" key={req._id}>
+                  <img
+                    className="friend-card-avatar sm"
+                    src={getAvatarUrl(
+                      req.sender.profilePicture,
+                      req.sender.name,
+                    )}
+                    alt={req.sender.name}
+                    onClick={() => navigate(`/profile/${req.sender._id}`)}
+                  />
+                  <div
+                    className="request-row-info"
+                    onClick={() => navigate(`/profile/${req.sender._id}`)}
                   >
-                    <Check size={15} /> Accept
-                  </button>
-                  <button
-                    className="btn-decline-full"
-                    onClick={() => rejectRequest(req._id)}
-                  >
-                    <X size={15} /> Decline
-                  </button>
+                    <p>{req.sender.name}</p>
+                    <span>Wants to connect with you</span>
+                  </div>
+                  <div className="request-row-actions">
+                    <button
+                      className="btn-accept-full"
+                      onClick={() => acceptRequest(req._id)}
+                    >
+                      <Check size={15} /> Accept
+                    </button>
+                    <button
+                      className="btn-decline-full"
+                      onClick={() => rejectRequest(req._id)}
+                    >
+                      <X size={15} /> Decline
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         )
       ) : sent.length === 0 ? (
@@ -143,34 +148,36 @@ export default function FriendRequests() {
         </p>
       ) : (
         <div className="request-list">
-          {sent.map((req) => (
-            <div className="request-row" key={req._id}>
-              <img
-                className="friend-card-avatar sm"
-                src={getAvatarUrl(
-                  req.receiver.profilePicture,
-                  req.receiver.name,
-                )}
-                alt={req.receiver.name}
-                onClick={() => navigate(`/profile/${req.receiver._id}`)}
-              />
-              <div
-                className="request-row-info"
-                onClick={() => navigate(`/profile/${req.receiver._id}`)}
-              >
-                <p>{req.receiver.name}</p>
-                <span>Request pending</span>
-              </div>
-              <div className="request-row-actions">
-                <button
-                  className="btn-decline-full"
-                  onClick={() => cancelRequest(req._id)}
+          {sent
+            .filter((req) => req.receiver)
+            .map((req) => (
+              <div className="request-row" key={req._id}>
+                <img
+                  className="friend-card-avatar sm"
+                  src={getAvatarUrl(
+                    req.receiver.profilePicture,
+                    req.receiver.name,
+                  )}
+                  alt={req.receiver.name}
+                  onClick={() => navigate(`/profile/${req.receiver._id}`)}
+                />
+                <div
+                  className="request-row-info"
+                  onClick={() => navigate(`/profile/${req.receiver._id}`)}
                 >
-                  <XCircle size={15} /> Cancel
-                </button>
+                  <p>{req.receiver.name}</p>
+                  <span>Request pending</span>
+                </div>
+                <div className="request-row-actions">
+                  <button
+                    className="btn-decline-full"
+                    onClick={() => cancelRequest(req._id)}
+                  >
+                    <XCircle size={15} /> Cancel
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       )}
     </MainLayout>

@@ -147,7 +147,7 @@ export default function Settings() {
   };
 
   return (
-    <MainLayout>
+    <MainLayout hideRightSidebar>
       <div className="settings-header">
         <h2>Settings</h2>
         <p>

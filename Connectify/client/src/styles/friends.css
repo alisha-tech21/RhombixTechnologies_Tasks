@@ -58,6 +58,10 @@
   padding: 18px;
   text-align: center;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
 }
 
 .friend-card-avatar {
@@ -99,6 +103,9 @@
   display: flex;
   gap: 8px;
   justify-content: center;
+  margin-top: auto; /* pushes buttons to the bottom of the card, regardless of text length above */
+  padding-top: 10px;
+  width: 100%;
 }
 
 .btn-icon-danger {
