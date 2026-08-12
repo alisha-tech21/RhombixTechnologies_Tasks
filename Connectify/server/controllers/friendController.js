@@ -125,11 +125,10 @@ const acceptFriendRequest = async (req, res, next) => {
       $addToSet: { friends: request.sender },
     });
 
-    // Remove the original "sent you a friend request" notification — it's now stale
-    await Notification.deleteMany({
-      type: "friend_request",
-      friendRequest: request._id,
-    });
+    await Notification.updateMany(
+      { type: "friend_request", friendRequest: request._id },
+      { handled: true, read: true },
+    );
     res.status(200).json({ success: true, message: "Friend request accepted" });
   } catch (error) {
     next(error);
@@ -161,10 +160,10 @@ const rejectFriendRequest = async (req, res, next) => {
     await request.deleteOne();
 
     // Remove the original "sent you a friend request" notification here too
-    await Notification.deleteMany({
-      type: "friend_request",
-      friendRequest: request._id,
-    });
+    await Notification.updateMany(
+      { type: "friend_request", friendRequest: request._id },
+      { handled: true, read: true },
+    );
     res.status(200).json({ success: true, message: "Friend request rejected" });
   } catch (error) {
     next(error);
@@ -211,6 +210,15 @@ const removeFriend = async (req, res, next) => {
     });
     await User.findByIdAndUpdate(friendId, {
       $pull: { friends: req.user._id },
+    });
+
+    // Clean up any old FriendRequest documents between these two users,
+    // so a fresh request can be sent later without any leftover history blocking it
+    await FriendRequest.deleteMany({
+      $or: [
+        { sender: req.user._id, receiver: friendId },
+        { sender: friendId, receiver: req.user._id },
+      ],
     });
 
     res.status(200).json({ success: true, message: "Friend removed" });
