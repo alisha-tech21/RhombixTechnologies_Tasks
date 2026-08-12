@@ -33,6 +33,10 @@ const notificationSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    handled: {
+      type: Boolean,
+      default: false, // true once a friend-request notification has been accepted/declined
+    },
   },
   { timestamps: true },
 );
