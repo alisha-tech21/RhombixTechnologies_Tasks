@@ -142,7 +142,11 @@ export default function Notifications() {
     e.stopPropagation();
     try {
       await api.put(`/friends/accept/${notif.friendRequest}`);
-      setNotifications((prev) => prev.filter((n) => n._id !== notif._id));
+      setNotifications((prev) =>
+        prev.map((n) =>
+          n._id === notif._id ? { ...n, handled: true, read: true } : n,
+        ),
+      );
       window.dispatchEvent(new Event("friend-request-count-changed"));
       toast.success("Friend request accepted");
     } catch (err) {
@@ -154,7 +158,11 @@ export default function Notifications() {
     e.stopPropagation();
     try {
       await api.put(`/friends/reject/${notif.friendRequest}`);
-      setNotifications((prev) => prev.filter((n) => n._id !== notif._id));
+      setNotifications((prev) =>
+        prev.map((n) =>
+          n._id === notif._id ? { ...n, handled: true, read: true } : n,
+        ),
+      );
       window.dispatchEvent(new Event("friend-request-count-changed"));
       toast.success("Request declined");
     } catch (err) {
@@ -236,7 +244,8 @@ export default function Notifications() {
                           </p>
 
                           {notif.type === "friend_request" &&
-                            notif.friendRequest && (
+                            notif.friendRequest &&
+                            !notif.handled && (
                               <div className="notif-inline-actions">
                                 <button
                                   className="btn-accept-full"
@@ -252,6 +261,11 @@ export default function Notifications() {
                                 </button>
                               </div>
                             )}
+                          {notif.type === "friend_request" && notif.handled && (
+                            <p className="notif-handled-label">
+                              Request handled
+                            </p>
+                          )}
                         </div>
 
                         <div className="notif-row-time">

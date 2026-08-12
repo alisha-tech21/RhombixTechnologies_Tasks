@@ -45,13 +45,7 @@ export default function Sidebar() {
     { icon: Home, label: "Home", path: "/" },
     { icon: User, label: "Profile", path: `/profile/${user?._id}` },
     { icon: Compass, label: "Explore", path: "/explore" },
-    { icon: Users, label: "Friends", path: "/friends" },
-    {
-      icon: UserPlus,
-      label: "Friend Requests",
-      path: "/friends/requests",
-      badge: requestCount,
-    },
+    { icon: Users, label: "Friends", path: "/friends", badge: requestCount },
     { icon: Bookmark, label: "Saved Posts", path: "/saved" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];
