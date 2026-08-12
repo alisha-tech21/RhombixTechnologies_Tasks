@@ -11,7 +11,6 @@ import EditProfile from "./pages/Profile/EditProfile";
 import Explore from "./pages/Explore/Explore";
 import PostDetail from "./pages/posts/PostDetail";
 import Friends from "./pages/Friends/Friends";
-import FriendRequests from "./pages/Friends/FriendRequests";
 import Notifications from "./pages/Notifications/Notifications";
 import SavedPosts from "./pages/posts/SavedPosts";
 import Settings from "./pages/Settings/Settings";
@@ -80,14 +79,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/friends/requests"
-          element={
-            <ProtectedRoute>
-              <FriendRequests />
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           path="/notifications"
           element={

@@ -216,3 +216,9 @@
 .notif-menu-dropdown button:hover {
   background: #fef2f2;
 }
+.notif-handled-label {
+  font-size: 11.5px;
+  color: #94a3b8;
+  font-style: italic;
+  margin: 6px 0 0;
+}
