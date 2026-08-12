@@ -62,7 +62,7 @@ export default function Friends() {
   );
 
   return (
-    <MainLayout>
+    <MainLayout hideRightSidebar>
       <div className="friends-header">
         <h2>{tab === "friends" ? "My Friends" : "People You May Know"}</h2>
         {tab === "friends" && (

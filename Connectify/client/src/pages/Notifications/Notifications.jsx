@@ -1,6 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, MessageCircle, UserPlus, UserCheck } from "lucide-react";
+import {
+  Heart,
+  MessageCircle,
+  UserPlus,
+  UserCheck,
+  MoreHorizontal,
+  Trash2,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import MainLayout from "../../components/layout/MainLayout";
 import api from "../../services/api";
@@ -67,7 +74,17 @@ export default function Notifications() {
   const [tab, setTab] = useState("all");
   const [visibleCount, setVisibleCount] = useState(15);
   const navigate = useNavigate();
-
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const menuRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpenMenuId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   useEffect(() => {
     loadNotifications();
 
@@ -108,6 +125,19 @@ export default function Notifications() {
     }
   };
 
+  const deleteNotification = async (e, notifId) => {
+    e.stopPropagation();
+    try {
+      await api.delete(`/notifications/${notifId}`);
+      setNotifications((prev) => prev.filter((n) => n._id !== notifId));
+      toast.success("Notification deleted");
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "Failed to delete notification",
+      );
+    }
+    setOpenMenuId(null);
+  };
   const acceptRequest = async (e, notif) => {
     e.stopPropagation();
     try {
@@ -227,6 +257,36 @@ export default function Notifications() {
                         <div className="notif-row-time">
                           {timeAgo(notif.createdAt)}
                           {!notif.read && <span className="notif-unread-dot" />}
+
+                          <div
+                            className="notif-menu-wrap"
+                            ref={openMenuId === notif._id ? menuRef : null}
+                          >
+                            <button
+                              className="notif-menu-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenMenuId(
+                                  openMenuId === notif._id ? null : notif._id,
+                                );
+                              }}
+                            >
+                              <MoreHorizontal size={16} />
+                            </button>
+
+                            {openMenuId === notif._id && (
+                              <div className="notif-menu-dropdown">
+                                <button
+                                  className="danger"
+                                  onClick={(e) =>
+                                    deleteNotification(e, notif._id)
+                                  }
+                                >
+                                  <Trash2 size={13} /> Delete notification
+                                </button>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))}

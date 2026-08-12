@@ -160,3 +160,59 @@
 .notif-load-more:hover {
   background: #f8fafc;
 }
+.notif-row-time {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.notif-menu-wrap {
+  position: relative;
+}
+
+.notif-menu-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 3px;
+  display: flex;
+  border-radius: 4px;
+}
+
+.notif-menu-btn:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.notif-menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: 24px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.15);
+  z-index: 30;
+  overflow: hidden;
+  min-width: 170px;
+}
+
+.notif-menu-dropdown button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 14px;
+  background: none;
+  border: none;
+  color: #dc2626;
+  font-size: 12.5px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.notif-menu-dropdown button:hover {
+  background: #fef2f2;
+}
