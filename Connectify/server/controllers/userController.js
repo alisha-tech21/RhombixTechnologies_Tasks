@@ -47,6 +47,7 @@ const getUserProfile = async (req, res, next) => {
         _id: user._id,
         name: user.name,
         username: user.username,
+        email: isSelf ? user.email : undefined,
         bio: user.bio,
         profilePicture: user.profilePicture,
         coverPhoto: user.coverPhoto,

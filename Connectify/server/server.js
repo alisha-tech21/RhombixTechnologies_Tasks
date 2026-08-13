@@ -14,6 +14,7 @@ const friendRoutes = require("./routes/friendRoutes");
 const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const mongoSanitizeBody = require("./middleware/sanitize");
+const projectRoutes = require("./routes/projectRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const { initSocket } = require("./socket/socketServer");
 
@@ -63,6 +64,7 @@ app.use("/api/friends", friendRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/projects", projectRoutes);
 
 // ---- Error Handling ----
 app.use(notFound);
