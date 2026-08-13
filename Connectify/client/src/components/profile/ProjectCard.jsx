@@ -1,6 +1,6 @@
 import {
   ExternalLink,
-  Github as GithubIcon,
+  Link2,
   MoreHorizontal,
   Pencil,
   Trash2,
@@ -105,7 +105,7 @@ export default function ProjectCard({ project, isOwner, onEdit, onDelete }) {
         <div className="project-card-links">
           {project.githubUrl && (
             <a href={project.githubUrl} target="_blank" rel="noreferrer">
-              <GithubIcon size={13} /> GitHub
+              <Link2 size={13} /> GitHub
             </a>
           )}
           {project.liveUrl && (

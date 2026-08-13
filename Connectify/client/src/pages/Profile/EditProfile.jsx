@@ -1,6 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Camera, MapPin, Globe, Link2, Plus, X, Trash2 } from "lucide-react";
+import {
+  Camera,
+  MapPin,
+  Globe,
+  Link2,
+  Plus,
+  X,
+  Trash2,
+  FolderGit2,
+} from "lucide-react";
+import ProjectCard from "../../components/profile/ProjectCard";
+import ProjectModal from "../../components/profile/ProjectModal";
 import toast from "react-hot-toast";
 import api from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
@@ -24,6 +35,8 @@ export default function EditProfile() {
   const [skillInput, setSkillInput] = useState("");
   const [education, setEducation] = useState([]);
   const [experience, setExperience] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [projectModal, setProjectModal] = useState(null);
   const [saving, setSaving] = useState(false);
 
   const [profileFile, setProfileFile] = useState(null);
@@ -49,6 +62,9 @@ export default function EditProfile() {
       setEducation(p.education || []);
       setExperience(p.experience || []);
     });
+    api
+      .get(`/projects/user/${user._id}`)
+      .then((res) => setProjects(res.data.projects));
   }, [user._id]);
 
   const handleChange = (field, value) => {
@@ -95,6 +111,25 @@ export default function EditProfile() {
 
   const removeExperience = (index) => {
     setExperience(experience.filter((_, i) => i !== index));
+  };
+  const handleProjectDelete = async (projectId) => {
+    if (!confirm("Delete this project?")) return;
+    try {
+      await api.delete(`/projects/${projectId}`);
+      setProjects((prev) => prev.filter((p) => p._id !== projectId));
+      toast.success("Project deleted");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete project");
+    }
+  };
+
+  const handleProjectSaved = (project) => {
+    setProjects((prev) => {
+      const exists = prev.some((p) => p._id === project._id);
+      return exists
+        ? prev.map((p) => (p._id === project._id ? project : p))
+        : [project, ...prev];
+    });
   };
 
   const handleProfileFileChange = (e) => {
@@ -317,6 +352,37 @@ export default function EditProfile() {
           </div>
 
           {/* Education */}
+          {/* Projects */}
+          <div className="edit-section-header">
+            <h3>
+              <FolderGit2 size={16} /> Projects
+            </h3>
+            <button
+              className="btn-add-link"
+              onClick={() => setProjectModal("new")}
+            >
+              <Plus size={14} /> Add Project
+            </button>
+          </div>
+          {projects.length === 0 ? (
+            <p className="settings-empty" style={{ marginBottom: 20 }}>
+              No projects added yet.
+            </p>
+          ) : (
+            <div className="projects-grid" style={{ marginBottom: 20 }}>
+              {projects.map((project) => (
+                <ProjectCard
+                  key={project._id}
+                  project={project}
+                  isOwner={true}
+                  onEdit={(p) => setProjectModal(p)}
+                  onDelete={handleProjectDelete}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Education */}
           <div className="edit-section-header">
             <h3>Education</h3>
             <button className="btn-add-link" onClick={addEducation}>
@@ -427,6 +493,14 @@ export default function EditProfile() {
           </button>
         </div>
       </div>
+
+      {projectModal && (
+        <ProjectModal
+          project={projectModal === "new" ? null : projectModal}
+          onClose={() => setProjectModal(null)}
+          onSaved={handleProjectSaved}
+        />
+      )}
     </div>
   );
 }
