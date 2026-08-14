@@ -171,8 +171,11 @@ export default function Profile() {
             ) : (
               <>
                 {profile.isFriend ? (
-                  <button className="btn-secondary" disabled>
-                    <MessageCircle size={15} /> Friends
+                  <button
+                    className="btn-secondary"
+                    onClick={() => navigate(`/messages?user=${profile._id}`)}
+                  >
+                    <MessageCircle size={15} /> Message
                   </button>
                 ) : (
                   <button
