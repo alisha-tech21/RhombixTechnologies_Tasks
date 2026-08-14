@@ -14,6 +14,7 @@ import Friends from "./pages/Friends/Friends";
 import Notifications from "./pages/Notifications/Notifications";
 import SavedPosts from "./pages/posts/SavedPosts";
 import Settings from "./pages/Settings/Settings";
+import Messages from "./pages/Messages/Messages";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 
 function App() {
@@ -101,6 +102,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/messages"
+          element={
+            <ProtectedRoute>
+              <Messages />
             </ProtectedRoute>
           }
         />

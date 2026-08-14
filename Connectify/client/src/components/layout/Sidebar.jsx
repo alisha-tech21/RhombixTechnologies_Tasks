@@ -8,10 +8,12 @@ import {
   Settings,
   Compass,
   User,
+  MessageCircle,
   MapPin,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
+import toast from "react-hot-toast";
 import socket from "../../services/socket";
 import "../../styles/layout.css";
 import { getAvatarUrl } from "../../utils/avatar";
@@ -40,12 +42,50 @@ export default function Sidebar() {
       window.removeEventListener("friend-request-count-changed", fetchCount);
     };
   }, []);
+  const [unreadMessages, setUnreadMessages] = useState(0);
+
+  useEffect(() => {
+    const fetchUnreadMessages = () => {
+      api.get("/messages/conversations").then((res) => {
+        const total = res.data.conversations.reduce(
+          (sum, c) => sum + c.unreadCount,
+          0,
+        );
+        setUnreadMessages(total);
+      });
+    };
+
+    fetchUnreadMessages();
+
+    const handleNewMessage = (data) => {
+      setUnreadMessages((prev) => prev + 1);
+      if (data.message.sender._id !== user?._id) {
+        toast(`💬 ${data.message.sender.name}: ${data.message.text}`, {
+          duration: 4000,
+        });
+      }
+    };
+
+    socket.on("new_message", handleNewMessage);
+    window.addEventListener("messages-count-refresh", fetchUnreadMessages);
+
+    return () => {
+      socket.off("new_message", handleNewMessage);
+      window.removeEventListener("messages-count-refresh", fetchUnreadMessages);
+    };
+  }, [user?._id]);
 
   const navItems = [
     { icon: Home, label: "Home", path: "/" },
     { icon: User, label: "Profile", path: `/profile/${user?._id}` },
     { icon: Compass, label: "Explore", path: "/explore" },
     { icon: Users, label: "Friends", path: "/friends", badge: requestCount },
+    {
+      icon: MessageCircle,
+      label: "Messages",
+      path: "/messages",
+      badge: unreadMessages,
+    },
     { icon: Bookmark, label: "Saved Posts", path: "/saved" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];
