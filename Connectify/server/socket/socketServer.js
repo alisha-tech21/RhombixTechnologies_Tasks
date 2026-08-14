@@ -41,9 +41,23 @@ const initSocket = (httpServer) => {
 
     onlineUsers.set(socket.userId, socket.id);
 
+    socket.on("register", (userId) => {
+      onlineUsers.set(userId, socket.id);
+      socket.userId = userId;
+      io.emit("user_status", { userId, online: true });
+    });
+
+    // Lets any client ask "who's currently online" (used when opening the Messages page)
+    socket.on("get_online_users", (callback) => {
+      callback(Array.from(onlineUsers.keys()));
+    });
+
     socket.on("disconnect", () => {
-      console.log(`❌ User disconnected: ${socket.userId}`);
-      onlineUsers.delete(socket.userId);
+      if (socket.userId) {
+        onlineUsers.delete(socket.userId);
+        io.emit("user_status", { userId: socket.userId, online: false });
+      }
+      console.log("Socket disconnected:", socket.id);
     });
   });
 
