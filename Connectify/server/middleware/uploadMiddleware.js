@@ -3,6 +3,7 @@ const path = require("path");
 const fs = require("fs");
 
 const uploadDir = path.join(__dirname, "..", "uploads");
+
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -11,22 +12,42 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDir);
   },
+
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+
     cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
   },
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png|gif|webp|mp4|mov|avi|webm/;
-  const isValidExt = allowedTypes.test(
-    path.extname(file.originalname).toLowerCase(),
-  );
-  const isValidMime = /^(image|video)\//.test(file.mimetype);
+  const allowedMimeTypes = [
+    // Images
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "image/avif",
+    "image/heic",
+    "image/heif",
 
-  if (isValidExt && isValidMime) {
+    // Videos
+    "video/mp4",
+    "video/mov",
+    "video/avi",
+    "video/webm",
+    "video/quicktime",
+  ];
+
+  if (allowedMimeTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
+    console.log("Rejected file:", {
+      name: file.originalname,
+      type: file.mimetype,
+    });
+
     cb(new Error("Only image or video files are allowed"));
   }
 };
@@ -34,7 +55,9 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB max (images + videos )
+  limits: {
+    fileSize: 50 * 1024 * 1024,
+  },
 });
 
 module.exports = upload;
