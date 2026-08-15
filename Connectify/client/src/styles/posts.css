@@ -857,3 +857,137 @@
 .comment-menu-dropdown button.danger {
   color: #dc2626;
 }
+/* ---------- Delete Confirmation Modal ---------- */
+
+.delete-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(15, 23, 42, 0.48);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+}
+
+.delete-modal {
+  width: 100%;
+  max-width: 390px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px;
+
+  text-align: center;
+
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.22);
+
+  animation: deleteModalIn 0.2s ease;
+}
+
+.delete-modal-icon {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 14px;
+
+  border-radius: 50%;
+  background: #fef2f2;
+  color: #dc2626;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-modal h3 {
+  margin: 0 0 8px;
+
+  font-family: "Sora", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.delete-modal p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.6;
+  color: #64748b;
+}
+
+.delete-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.delete-modal-actions button {
+  flex: 1;
+
+  border: none;
+  border-radius: 9px;
+
+  padding: 10px 16px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.delete-cancel-btn {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.delete-cancel-btn:hover {
+  background: #e2e8f0;
+}
+
+.delete-confirm-btn {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.delete-confirm-btn:hover {
+  background: #b91c1c;
+}
+
+.delete-modal-actions button:active {
+  transform: scale(0.98);
+}
+
+.delete-modal-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@keyframes deleteModalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .delete-modal {
+    max-width: 340px;
+    padding: 24px 20px;
+  }
+
+  .delete-modal-actions {
+    flex-direction: column-reverse;
+  }
+}

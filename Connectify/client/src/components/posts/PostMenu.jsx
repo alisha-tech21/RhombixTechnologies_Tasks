@@ -22,6 +22,8 @@ export default function PostMenu({
 }) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [saved, setSaved] = useState(
     user?.savedPosts?.includes(post._id) || false,
   );
@@ -39,15 +41,21 @@ export default function PostMenu({
   }, []);
 
   const handleDelete = async () => {
-    if (!confirm("Delete this post? This cannot be undone.")) return;
+    setDeleting(true);
+
     try {
       await api.delete(`/posts/${post._id}`);
+
       onDeleted(post._id);
-      toast.success("Post deleted");
+      toast.success("Post deleted successfully");
+
+      setShowDeleteModal(false);
+      setOpen(false);
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to delete post");
+    } finally {
+      setDeleting(false);
     }
-    setOpen(false);
   };
 
   const handleSaveToggle = async () => {
@@ -111,7 +119,13 @@ export default function PostMenu({
               >
                 <Pencil size={14} /> Edit post
               </button>
-              <button className="danger" onClick={handleDelete}>
+              <button
+                className="danger"
+                onClick={() => {
+                  setOpen(false);
+                  setShowDeleteModal(true);
+                }}
+              >
                 <Trash2 size={14} /> Delete post
               </button>
               <div className="menu-divider" />
@@ -144,6 +158,46 @@ export default function PostMenu({
               </button>
             </>
           )}
+        </div>
+      )}
+      {showDeleteModal && (
+        <div
+          className="delete-modal-overlay"
+          onClick={() => {
+            if (!deleting) setShowDeleteModal(false);
+          }}
+        >
+          <div className="delete-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="delete-modal-icon">
+              <Trash2 size={22} />
+            </div>
+
+            <h3>Delete Post?</h3>
+
+            <p>
+              Are you sure you want to delete this post?
+              <br />
+              This action cannot be undone.
+            </p>
+
+            <div className="delete-modal-actions">
+              <button
+                className="delete-cancel-btn"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleting}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="delete-confirm-btn"
+                onClick={handleDelete}
+                disabled={deleting}
+              >
+                {deleting ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

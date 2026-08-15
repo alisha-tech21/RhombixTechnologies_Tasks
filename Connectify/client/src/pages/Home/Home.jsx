@@ -4,9 +4,12 @@ import PostCard from "../../components/posts/PostCard";
 import CreatePostBox from "../../components/posts/CreatePostBox";
 import api from "../../services/api";
 import socket from "../../services/socket";
+import { useAuth } from "../../context/AuthContext";
 import "../../styles/posts.css";
 
 export default function Home() {
+  const { user } = useAuth();
+
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,6 +26,9 @@ export default function Home() {
     loadFeed();
 
     const handleNewPost = (post) => {
+      // Don't add our own post again because handlePostCreated already adds it
+      if (post.user?._id === user?._id) return;
+
       setPosts((prev) => [post, ...prev]);
     };
     socket.on("new_post", handleNewPost);
