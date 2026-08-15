@@ -9,24 +9,21 @@ const conversationSchema = new mongoose.Schema(
         required: true,
       },
     ],
-
     participantsKey: {
       type: String,
       required: true,
+      unique: true, // guarantees exactly ONE conversation document per pair of users, ever
     },
-
     deletedFor: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
-
     lastMessage: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Message",
     },
-
     lastMessageAt: {
       type: Date,
       default: Date.now,
@@ -34,4 +31,5 @@ const conversationSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
 module.exports = mongoose.model("Conversation", conversationSchema);

@@ -81,21 +81,25 @@ const getOrCreateConversation = async (req, res, next) => {
       .sort()
       .join("_");
 
-    // Find an existing conversation that has NOT been deleted
-    // by the current user.
-    let conversation = await Conversation.findOne({
-      participantsKey,
-      participants: { $all: [req.user._id, otherUserId] },
-      deletedFor: { $ne: req.user._id },
-    });
+    // Atomic "find or create" — the unique index on participantsKey guarantees
+    // this never creates a duplicate, even if called twice at once (e.g. React StrictMode)
+    let conversation = await Conversation.findOneAndUpdate(
+      { participantsKey },
+      {
+        $setOnInsert: {
+          participants: [req.user._id, otherUserId],
+          participantsKey,
+        },
+      },
+      { new: true, upsert: true },
+    );
 
-    // If no active conversation exists, create a NEW one.
-    if (!conversation) {
-      conversation = await Conversation.create({
-        participants: [req.user._id, otherUserId],
-        participantsKey,
-        deletedFor: [],
-      });
+    // If I had deleted this conversation before, opening it again should unhide it for me
+    if (conversation.deletedFor?.some((id) => id.equals(req.user._id))) {
+      conversation.deletedFor = conversation.deletedFor.filter(
+        (id) => !id.equals(req.user._id),
+      );
+      await conversation.save();
     }
 
     conversation = await conversation.populate(
@@ -177,32 +181,17 @@ const sendMessage = async (req, res, next) => {
     }
 
     // Find the other participant
+    // Find the other participant
     const recipientId = conversation.participants.find(
       (p) => !p.equals(req.user._id),
     );
 
-    // ------------------------------------------------
-    // IMPORTANT:
-    // If recipient deleted this conversation,
-    // create a NEW conversation for this message.
-    // ------------------------------------------------
-    const recipientDeletedConversation = conversation.deletedFor?.some((id) =>
-      id.equals(recipientId),
+    // Sending a message un-hides the conversation for BOTH people —
+    // same conversation, same history, just reappears in whoever's list had it hidden
+    conversation.deletedFor = (conversation.deletedFor || []).filter(
+      (id) => !id.equals(req.user._id) && !id.equals(recipientId),
     );
 
-    if (recipientDeletedConversation) {
-      const participantsKey = [req.user._id.toString(), recipientId.toString()]
-        .sort()
-        .join("_");
-
-      conversation = await Conversation.create({
-        participants: [req.user._id, recipientId],
-        participantsKey,
-        deletedFor: [],
-      });
-    }
-
-    // Create message in the correct conversation
     const message = await Message.create({
       conversation: conversation._id,
       sender: req.user._id,
@@ -308,6 +297,25 @@ const deleteConversation = async (req, res, next) => {
     next(error);
   }
 };
+// @desc    Mark all messages in a conversation as read (used for real-time sync,
+//          e.g. when a new message arrives while the conversation is already open)
+// @route   PUT /api/messages/:conversationId/read
+// @access  Private
+const markConversationRead = async (req, res, next) => {
+  try {
+    await Message.updateMany(
+      {
+        conversation: req.params.conversationId,
+        sender: { $ne: req.user._id },
+        read: false,
+      },
+      { read: true },
+    );
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   getConversations,
@@ -316,4 +324,5 @@ module.exports = {
   sendMessage,
   deleteMessage,
   deleteConversation,
+  markConversationRead,
 };
