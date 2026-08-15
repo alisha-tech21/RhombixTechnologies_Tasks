@@ -57,13 +57,26 @@ export default function Messages() {
     conv.otherUser.name.toLowerCase().includes(searchText.toLowerCase()),
   );
   // Real-time incoming messages
+  // Real-time incoming messages
   useEffect(() => {
-    const handleNewMessage = (data) => {
-      if (activeConv && data.conversationId === activeConv._id) {
+    const handleNewMessage = async (data) => {
+      const isViewingThisChat =
+        activeConv && data.conversationId === activeConv._id;
+
+      if (isViewingThisChat) {
         setMessages((prev) => [...prev, data.message]);
+        // I'm actively looking at this chat — mark it read immediately so no unread badge appears
+        try {
+          await api.put(`/messages/${data.conversationId}/read`);
+        } catch {
+          // non-critical, ignore
+        }
       }
+
       loadConversations();
+      window.dispatchEvent(new Event("messages-count-refresh"));
     };
+
     socket.on("new_message", handleNewMessage);
     return () => socket.off("new_message", handleNewMessage);
   }, [activeConv]);
@@ -124,6 +137,17 @@ export default function Messages() {
       const res = await api.post(`/messages/${activeConv._id}`, {
         text: currentText,
       });
+
+      // If the server had to create a fresh conversation (because the recipient
+      // deleted the old one), switch to it — otherwise the next message would
+      // hit the old, deleted conversation again and create yet another duplicate.
+      if (
+        res.data.conversationId &&
+        res.data.conversationId !== activeConv._id
+      ) {
+        setActiveConv((prev) => ({ ...prev, _id: res.data.conversationId }));
+      }
+
       setMessages((prev) => [...prev, res.data.message]);
       loadConversations();
     } catch {

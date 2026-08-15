@@ -8,6 +8,7 @@ import {
   Check,
   X,
   XCircle,
+  Send,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import MainLayout from "../../components/layout/MainLayout";
@@ -229,6 +230,14 @@ export default function Friends() {
                             onClick={() => navigate(`/profile/${person._id}`)}
                           >
                             <MessageCircle size={14} /> View
+                          </button>
+                          <button
+                            className="btn-secondary"
+                            onClick={() =>
+                              navigate(`/messages?user=${person._id}`)
+                            }
+                          >
+                            <Send size={14} /> Message
                           </button>
                           <button
                             className="btn-icon-danger"

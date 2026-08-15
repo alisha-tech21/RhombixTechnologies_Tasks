@@ -18,7 +18,7 @@ import socket from "../../services/socket";
 import "../../styles/layout.css";
 import { getAvatarUrl } from "../../utils/avatar";
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   const { user } = useAuth();
   const location = useLocation();
   const [requestCount, setRequestCount] = useState(0);
@@ -91,7 +91,8 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="app-sidebar">
+    <aside className={`app-sidebar ${isOpen ? "mobile-sidebar-open" : ""}`}>
+      {" "}
       <div className="sidebar-profile-card">
         {/* Cover */}
         <div className="sidebar-cover">
@@ -106,7 +107,12 @@ export default function Sidebar() {
         </div>
 
         {/* Profile Picture */}
-        <Link to={`/profile/${user?._id}`} className="sidebar-avatar-wrap">
+        <Link
+          to={`/profile/${user?._id}`}
+          className="sidebar-avatar-wrap"
+          onClick={onClose}
+        >
+          {" "}
           <img
             className="sidebar-avatar"
             src={getAvatarUrl(user?.profilePicture, user?.name)}
@@ -116,7 +122,12 @@ export default function Sidebar() {
 
         {/* User Info */}
         <div className="sidebar-user-info">
-          <Link to={`/profile/${user?._id}`} className="sidebar-name">
+          <Link
+            to={`/profile/${user?._id}`}
+            className="sidebar-name"
+            onClick={onClose}
+          >
+            {" "}
             {user?.name}
           </Link>
 
@@ -133,12 +144,16 @@ export default function Sidebar() {
             </div>
           )}
 
-          <Link to={`/profile/${user?._id}`} className="sidebar-view-profile">
+          <Link
+            to={`/profile/${user?._id}`}
+            className="sidebar-view-profile"
+            onClick={onClose}
+          >
+            {" "}
             View Profile
           </Link>
         </div>
       </div>
-
       <nav className="sidebar-nav">
         {navItems.map(({ icon: Icon, label, path, badge }) => (
           <Link
