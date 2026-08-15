@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Bell, LogOut, Link2 } from "lucide-react";
+import { Search, Bell, LogOut, Link2, Menu } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { getAvatarUrl } from "../../utils/avatar";
 import api from "../../services/api";
 import socket from "../../services/socket";
 import "../../styles/layout.css";
 
-export default function Topbar() {
+export default function Topbar({ onMenuClick }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState(0);
@@ -73,6 +73,13 @@ export default function Topbar() {
   return (
     <header className="app-topbar">
       <div className="app-topbar-inner">
+        <button
+          className="mobile-menu-btn"
+          onClick={onMenuClick}
+          aria-label="Open navigation menu"
+        >
+          <Menu size={20} />
+        </button>
         <Link to="/" className="topbar-logo">
           <span className="topbar-logo-mark">
             <Link2 size={16} />
