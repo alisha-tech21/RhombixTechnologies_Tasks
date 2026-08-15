@@ -62,9 +62,7 @@ export default function CreatePostModal({ onClose, onPostCreated }) {
       formData.append("visibility", visibility);
       files.forEach((f) => formData.append("media", f));
 
-      const res = await api.post("/posts", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const res = await api.post("/posts", formData);
 
       onPostCreated(res.data.post);
       toast.success("Post shared!");

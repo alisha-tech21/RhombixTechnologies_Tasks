@@ -40,6 +40,7 @@ export default function PostCard({ post: initialPost, onDeleted, onUnsaved }) {
   const [showComments, setShowComments] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [textExpanded, setTextExpanded] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   if (!post.user) return null;
 
@@ -106,6 +107,7 @@ export default function PostCard({ post: initialPost, onDeleted, onUnsaved }) {
           post={post}
           isOwner={isOwner}
           onEdit={() => setIsEditing(true)}
+          onDeleteRequest={() => setShowDeleteModal(true)}
           onDeleted={onDeleted}
           onUnsaved={onUnsaved}
         />
@@ -207,6 +209,43 @@ export default function PostCard({ post: initialPost, onDeleted, onUnsaved }) {
           onClose={() => setIsEditing(false)}
           onSaved={(updated) => setPost(updated)}
         />
+      )}
+      {showDeleteModal && (
+        <div
+          className="delete-modal-overlay"
+          onClick={() => setShowDeleteModal(false)}
+        >
+          <div className="delete-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="delete-modal-icon">🗑️</div>
+
+            <h3>Delete Post?</h3>
+
+            <p>
+              Are you sure you want to delete this post?
+              <br />
+              This action cannot be undone.
+            </p>
+
+            <div className="delete-modal-actions">
+              <button
+                className="delete-cancel-btn"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="delete-confirm-btn"
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  // yahan actual delete function call hoga
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
