@@ -1,6 +1,6 @@
 import "./Experience.css";
 import { motion } from "framer-motion";
-import { FaBriefcase, FaLaptopCode } from "react-icons/fa";
+import { FaBriefcase, FaLaptopCode, FaCode } from "react-icons/fa";
 
 const experienceData = [
   {
@@ -42,6 +42,18 @@ const experienceData = [
       "Implemented automated post scheduling and background jobs using Node-Cron.",
       "Integrated AI-powered caption and hashtag generation for content creation.",
       "Designed responsive interfaces and RESTful APIs for frontend-backend communication.",
+    ],
+  },
+  {
+    year: "2026",
+    title: "Selected Personal Projects",
+    subtitle: "Web Development · Self Learning",
+    icon: <FaCode />,
+    points: [
+      "Built multiple responsive web applications using React.js, JavaScript, HTML5, and CSS3.",
+      "Developed projects including DevHub, Aurora Weather, Glide Away, and Beyond The Peaks.",
+      "Integrated REST APIs and external services to create dynamic and data-driven applications.",
+      "Focused on modern UI design, responsive layouts, reusable components, and user experience.",
     ],
   },
 ];
