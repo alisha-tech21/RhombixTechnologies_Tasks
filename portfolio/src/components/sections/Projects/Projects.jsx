@@ -7,10 +7,8 @@ import { FaGithub } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Autoplay, Pagination } from "swiper/modules";
-
+import { Autoplay } from "swiper/modules";
 import "swiper/css";
-import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 const Projects = () => {
@@ -18,6 +16,7 @@ const Projects = () => {
 
   return (
     <section className="projects" id="projects">
+      {/* ================= HEADING ================= */}
       <motion.div
         className="projects-heading"
         initial={{ opacity: 0, y: 40 }}
@@ -34,6 +33,7 @@ const Projects = () => {
         </p>
       </motion.div>
 
+      {/* ================= SLIDER ================= */}
       <div className="projects-slider-wrapper">
         {/* LEFT ARROW */}
         <button
@@ -48,23 +48,29 @@ const Projects = () => {
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
           }}
-          modules={[Autoplay, Pagination]}
-          pagination={{ clickable: true }}
+          modules={[Autoplay]}
           loop={true}
+          slidesPerGroup={1}
+          loopedSlides={projectData.length}
+          speed={700}
           autoplay={{
             delay: 3000,
             disableOnInteraction: false,
+            pauseOnMouseEnter: true,
           }}
           spaceBetween={20}
           breakpoints={{
             0: {
               slidesPerView: 1,
+              slidesPerGroup: 1,
             },
             768: {
               slidesPerView: 2,
+              slidesPerGroup: 1,
             },
             1200: {
               slidesPerView: 3,
+              slidesPerGroup: 1,
             },
           }}
           className="projects-slider"
