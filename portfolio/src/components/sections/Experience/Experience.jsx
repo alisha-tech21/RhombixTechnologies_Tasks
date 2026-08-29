@@ -1,43 +1,47 @@
 import "./Experience.css";
 import { motion } from "framer-motion";
-
-import { FaGlobe, FaLaptopCode, FaCode } from "react-icons/fa";
+import { FaBriefcase, FaLaptopCode } from "react-icons/fa";
 
 const experienceData = [
   {
-    year: "2026 — PRESENT",
-    title: "Personal MERN Stack Projects",
-    subtitle: "Self Learning & Development",
-    icon: <FaGlobe />,
+    year: "22 JUL 2026 — PRESENT",
+    title: "Web Development Intern",
+    subtitle: "Rhombix Technologies · Remote",
+    icon: <FaBriefcase />,
     points: [
-      "Developed full-stack web applications using React.js, Node.js, Express.js, and MongoDB.",
-      "Built responsive and user-friendly interfaces with a focus on performance and clean design.",
-      "Implemented REST APIs, authentication, and database integration.",
-      "Continuously improving development skills through real-world projects.",
+      "Developing responsive and interactive web applications using React.js, JavaScript, HTML5, and CSS3.",
+      "Built Connectify, a social networking platform with user profiles, posts, comments, likes, friend requests, and multimedia content sharing.",
+      "Created a professional portfolio website to showcase projects, technical skills, experience, and achievements.",
+      "Implemented reusable React components and responsive layouts for different screen sizes.",
+      "Working on practical web development tasks while strengthening frontend and full-stack development skills.",
     ],
   },
+
+  {
+    year: "05 AUG 2026 — 05 SEP 2026",
+    title: "Frontend Development Intern",
+    subtitle: "Progree · Internship",
+    icon: <FaBriefcase />,
+    points: [
+      "Developed a semantic and mobile-responsive marketing landing page using HTML5 and custom CSS.",
+      "Built an asynchronous weather application using React.js, Fetch API, async/await, and OpenWeatherMap API.",
+      "Developed an analytical administration portal using React.js and frontend routing.",
+      "Implemented responsive charts, searching, filtering, multi-column sorting, and dark-mode functionality.",
+      "Focused on responsive design, API integration, reusable components, loading states, error handling, and cross-browser compatibility.",
+    ],
+  },
+
   {
     year: "2026",
-    title: "TrendMesh – Smart Social Media Scheduling Platform",
-    subtitle: "Final Year Project",
+    title: "TrendMesh",
+    subtitle: "Smart Social Media Scheduling Platform · Final Year Project",
     icon: <FaLaptopCode />,
     points: [
-      "Developed a Smart Social Media Scheduling Platform using the MERN Stack.",
-      "Integrated Facebook and Instagram APIs for social media management.",
-      "Implemented automated post scheduling using Node-Cron.",
-      "Added AI-powered caption and hashtag generation features.",
-    ],
-  },
-  {
-    year: "2026",
-    title: "DevHub – Developer Portfolio Platform",
-    subtitle: "Personal Project",
-    icon: <FaCode />,
-    points: [
-      "Built a modern MERN-based portfolio and blogging platform.",
-      "Integrated the GitHub API to display repositories and developer statistics.",
-      "Developed secure authentication and blog management features.",
-      "Deployed the application using modern cloud platforms.",
+      "Developed a full-stack social media scheduling platform using React.js, Node.js, Express.js, and MongoDB.",
+      "Integrated Facebook and Instagram Graph APIs for social media management.",
+      "Implemented automated post scheduling and background jobs using Node-Cron.",
+      "Integrated AI-powered caption and hashtag generation for content creation.",
+      "Designed responsive interfaces and RESTful APIs for frontend-backend communication.",
     ],
   },
 ];
@@ -46,9 +50,6 @@ const Experience = () => {
   return (
     <section className="experience" id="experience">
       <div className="experience-container">
-        {/* =========================
-              HEADING
-        ========================= */}
         <motion.div
           className="experience-heading"
           initial={{ opacity: 0, y: 40 }}
@@ -57,18 +58,15 @@ const Experience = () => {
           transition={{ duration: 0.8 }}
         >
           <h2>
-            PROJECT <span>EXPERIENCE</span>
+            MY <span>EXPERIENCE</span>
           </h2>
 
           <p>
-            A showcase of my hands-on development experience through full-stack
-            projects and continuous learning.
+            My professional journey through internships, practical web
+            development, and hands-on software projects.
           </p>
         </motion.div>
 
-        {/* =========================
-              TIMELINE
-        ========================= */}
         <div className="experience-timeline">
           <div className="timeline-line"></div>
 
@@ -77,7 +75,7 @@ const Experience = () => {
               className={`timeline-item ${
                 index % 2 === 0 ? "timeline-left" : "timeline-right"
               }`}
-              key={item.title}
+              key={`${item.title}-${index}`}
               initial={{
                 opacity: 0,
                 x: index % 2 === 0 ? -60 : 60,
@@ -86,23 +84,23 @@ const Experience = () => {
                 opacity: 1,
                 x: 0,
               }}
-              viewport={{ once: true, amount: 0.2 }}
+              viewport={{
+                once: true,
+                amount: 0.2,
+              }}
               transition={{
                 duration: 0.7,
                 delay: 0.1,
               }}
             >
-              {/* LEFT CARD */}
               {index % 2 === 0 && (
                 <div className="timeline-content">
                   <ExperienceCard item={item} />
                 </div>
               )}
 
-              {/* NODE */}
               <div className="timeline-node">{item.icon}</div>
 
-              {/* RIGHT CARD */}
               {index % 2 !== 0 && (
                 <div className="timeline-content">
                   <ExperienceCard item={item} />
@@ -115,10 +113,6 @@ const Experience = () => {
     </section>
   );
 };
-
-/* =========================
-      EXPERIENCE CARD
-========================= */
 
 const ExperienceCard = ({ item }) => {
   return (
