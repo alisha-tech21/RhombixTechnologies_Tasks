@@ -1,0 +1,45 @@
+.section-separator {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+
+  padding: 25px 8%;
+  background: var(--bg);
+}
+
+.section-separator span {
+  height: 1px;
+  flex: 1;
+  max-width: 180px;
+
+  background: linear-gradient(to right, transparent, #9333ea);
+}
+
+.section-separator span:last-child {
+  background: linear-gradient(to left, transparent, #9333ea);
+}
+
+.section-separator-diamond {
+  width: 14px;
+  height: 14px;
+
+  border: 2px solid #9333ea;
+
+  transform: rotate(45deg);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 0 14px rgba(147, 51, 234, 0.45);
+}
+
+.section-separator-diamond div {
+  width: 4px;
+  height: 4px;
+
+  border-radius: 50%;
+  background: #9333ea;
+}
