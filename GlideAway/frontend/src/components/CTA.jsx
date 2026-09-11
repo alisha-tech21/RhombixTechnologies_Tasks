@@ -4,9 +4,11 @@ import tokyoImg from "../assets/tokyo.png";
 import parisImg from "../assets/paris.png";
 import beachImg from "../assets/beach.png";
 import dubaiImg from "../assets/dubai.png";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, Compass } from "lucide-react";
 
 function CTA() {
+  const navigate = useNavigate();
   return (
     <section className="cta-banner-section">
       <div className="cta-container">
@@ -25,7 +27,7 @@ function CTA() {
             Discover amazing places and create unforgettable memories with our
             curated travel experiences, exclusive fares, and custom guides.
           </p>
-          <button className="cta-btn">
+          <button className="cta-btn" onClick={() => navigate("/explore")}>
             Explore Destinations <ArrowRight size={16} className="cta-arrow" />
           </button>
         </div>

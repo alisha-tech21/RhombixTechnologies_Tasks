@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { MapPin, Trash2 } from "lucide-react";
 import api from "../../api/axios";
 
@@ -130,7 +131,7 @@ function SavedStays() {
                       color: "#0a2540",
                     }}
                   >
-                    ${stay.priceFrom}{" "}
+                    ${stay.priceFrom || stay.price || 150}{" "}
                     <span
                       style={{
                         fontSize: "12px",
@@ -141,7 +142,8 @@ function SavedStays() {
                       / night
                     </span>
                   </span>
-                  <button
+                  <Link
+                    to={`/property/${stay._id}`}
                     style={{
                       background: "#0e7c86",
                       color: "#fff",
@@ -151,10 +153,12 @@ function SavedStays() {
                       fontSize: "12px",
                       fontWeight: "600",
                       cursor: "pointer",
+                      textDecoration: "none",
+                      display: "inline-block",
                     }}
                   >
                     Book Now
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

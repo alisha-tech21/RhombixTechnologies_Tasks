@@ -1,15 +1,19 @@
 .exclusive-deals-section {
+  width: 100%;
   max-width: 1200px;
   margin: 90px auto;
   padding: 0 24px;
+  box-sizing: border-box;
   font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 /* Header styling */
+
 .deals-header-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  gap: 20px;
   margin-bottom: 30px;
 }
 
@@ -37,6 +41,7 @@
   align-items: center;
   gap: 6px;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .view-all-link:hover {
@@ -45,6 +50,7 @@
 }
 
 /* Main Top Banner */
+
 .main-deal-banner {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -72,6 +78,7 @@
   height: 300px;
   object-fit: cover;
   border-radius: 14px;
+  display: block;
 }
 
 .main-deal-tag {
@@ -150,6 +157,7 @@
 }
 
 /* Bottom 3 Cards Grid */
+
 .deals-bottom-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -166,12 +174,14 @@
   text-decoration: none;
   color: inherit;
   display: block;
+  min-width: 0;
 }
 
 .small-card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
   transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
@@ -192,6 +202,7 @@
   justify-content: flex-end;
   padding: 22px;
   color: #ffffff;
+  box-sizing: border-box;
 }
 
 .small-card-discount {
@@ -214,21 +225,281 @@
   line-height: 1.3;
 }
 
-/* Responsive Styles */
+/* =====================================================
+   LARGE TABLET
+===================================================== */
+
 @media (max-width: 1024px) {
+  .exclusive-deals-section {
+    margin: 70px auto;
+    padding: 0 20px;
+  }
+
   .main-deal-banner {
     grid-template-columns: 1fr;
   }
-  .main-deal-img {
-    height: 240px;
+
+  .main-deal-img-wrap {
+    padding: 16px;
   }
+
+  .main-deal-img {
+    height: 300px;
+  }
+
   .main-deal-content {
     padding: 30px;
   }
+
+  .main-deal-title {
+    font-size: 28px;
+  }
+
+  .deals-bottom-grid {
+    gap: 18px;
+  }
+
+  .deal-small-card {
+    height: 210px;
+  }
 }
 
+/* =====================================================
+   TABLET
+===================================================== */
+
 @media (max-width: 768px) {
+  .exclusive-deals-section {
+    margin: 60px auto;
+    padding: 0 18px;
+  }
+
+  .deals-header-row {
+    align-items: flex-start;
+    margin-bottom: 22px;
+  }
+
+  .section-main-title {
+    font-size: 25px;
+  }
+
+  .section-subtitle {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .view-all-link {
+    font-size: 13px;
+  }
+
+  .main-deal-banner {
+    border-radius: 17px;
+    margin-bottom: 20px;
+  }
+
+  .main-deal-img-wrap {
+    padding: 12px;
+  }
+
+  .main-deal-img {
+    height: 260px;
+    border-radius: 12px;
+  }
+
+  .main-deal-tag {
+    top: 23px;
+    left: 23px;
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+
+  .main-deal-content {
+    padding: 25px;
+  }
+
+  .main-deal-discount {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  .main-deal-title {
+    font-size: 26px;
+  }
+
+  .main-deal-desc {
+    font-size: 13.5px;
+    margin-bottom: 20px;
+  }
+
+  .btn-explore-deal {
+    font-size: 13px;
+    padding: 11px 24px;
+  }
+
+  .deals-bottom-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .deal-small-card {
+    height: 200px;
+    border-radius: 15px;
+  }
+
+  .small-card-overlay {
+    padding: 16px;
+  }
+
+  .small-card-discount {
+    font-size: 10.5px;
+    padding: 4px 8px;
+  }
+
+  .small-card-title {
+    font-size: 17px;
+  }
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+  .exclusive-deals-section {
+    margin: 45px auto;
+    padding: 0 14px;
+  }
+
+  .deals-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .section-main-title {
+    font-size: 23px;
+    line-height: 1.15;
+  }
+
+  .section-subtitle {
+    font-size: 12px;
+  }
+
+  .view-all-link {
+    font-size: 12px;
+  }
+
+  .main-deal-banner {
+    display: block;
+    border-radius: 15px;
+    margin-bottom: 18px;
+  }
+
+  .main-deal-img-wrap {
+    padding: 10px;
+  }
+
+  .main-deal-img {
+    height: 220px;
+    border-radius: 11px;
+  }
+
+  .main-deal-tag {
+    top: 20px;
+    left: 20px;
+    font-size: 9px;
+    padding: 5px 9px;
+  }
+
+  .main-deal-content {
+    padding: 20px;
+  }
+
+  .main-deal-discount {
+    font-size: 10.5px;
+    padding: 5px 10px;
+    margin-bottom: 9px;
+  }
+
+  .main-deal-title {
+    font-size: 23px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .main-deal-desc {
+    font-size: 12.5px;
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+
+  .btn-explore-deal {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 11px 20px;
+    font-size: 12.5px;
+  }
+
   .deals-bottom-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .deal-small-card {
+    height: 210px;
+    border-radius: 14px;
+  }
+
+  .small-card-overlay {
+    padding: 17px;
+  }
+
+  .small-card-discount {
+    font-size: 10.5px;
+  }
+
+  .small-card-title {
+    font-size: 18px;
+  }
+}
+
+/* =====================================================
+   VERY SMALL MOBILE
+===================================================== */
+
+@media (max-width: 380px) {
+  .exclusive-deals-section {
+    padding: 0 12px;
+    margin: 35px auto;
+  }
+
+  .section-main-title {
+    font-size: 21px;
+  }
+
+  .main-deal-img {
+    height: 190px;
+  }
+
+  .main-deal-content {
+    padding: 17px;
+  }
+
+  .main-deal-title {
+    font-size: 21px;
+  }
+
+  .main-deal-desc {
+    font-size: 12px;
+  }
+
+  .deal-small-card {
+    height: 190px;
+  }
+
+  .small-card-title {
+    font-size: 16px;
   }
 }

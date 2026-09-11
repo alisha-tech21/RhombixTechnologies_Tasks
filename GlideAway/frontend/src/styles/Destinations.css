@@ -7,7 +7,13 @@
 }
 
 .destinations-hero {
-  background: linear-gradient(135deg, #0a2540 0%, #0e7c86 100%);
+  position: relative;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.58)),
+    url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=85");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: #ffffff;
   padding: 140px 20px 80px 20px;
   text-align: center;

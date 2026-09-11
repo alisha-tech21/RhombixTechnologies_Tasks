@@ -257,3 +257,11 @@
     max-width: 100%;
   }
 }
+.wishlist-btn.saved {
+  background: #0e7c86;
+  color: #ffffff;
+}
+
+.wishlist-btn.saved svg {
+  fill: currentColor;
+}

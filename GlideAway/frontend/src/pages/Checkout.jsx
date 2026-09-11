@@ -70,25 +70,51 @@ function Checkout() {
   return (
     <div className="booking-page">
       <div className="booking-container">
-        <Link to={`/property/${trip.propertyId}`} className="booking-back">
-          ← Back to property
-        </Link>
+        <div className="checkout-step-header">
+          <Link to={`/property/${trip.propertyId}`} className="booking-back">
+            ← Back to property
+          </Link>
+
+          {/* Progress Indicator */}
+          <div className="checkout-steps-indicator">
+            <div className="step-item completed">
+              <span className="step-circle">✓</span>
+              <span className="step-text">Selection</span>
+            </div>
+            <div className="step-line active"></div>
+            <div className="step-item active">
+              <span className="step-circle">2</span>
+              <span className="step-text">Details</span>
+            </div>
+            <div className="step-line"></div>
+            <div className="step-item">
+              <span className="step-circle">3</span>
+              <span className="step-text">Payment</span>
+            </div>
+            <div className="step-line"></div>
+            <div className="step-item">
+              <span className="step-circle">4</span>
+              <span className="step-text">Confirm</span>
+            </div>
+          </div>
+        </div>
 
         <h2 style={{ fontFamily: "Fraunces, serif", marginBottom: "24px" }}>
-          Checkout
+          Guest Details
         </h2>
 
         {error && <div className="error-banner">{error}</div>}
 
         <div className="checkout-grid">
           <div className="checkout-form-card">
-            <h3>Guest details</h3>
+            <h3>Enter traveller information</h3>
             <form onSubmit={handleContinue}>
               <div className="form-row">
                 <label>Full name</label>
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  placeholder="John Doe"
                   required
                 />
               </div>
@@ -99,6 +125,7 @@ function Checkout() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    placeholder="john@example.com"
                     required
                   />
                 </div>
@@ -107,6 +134,7 @@ function Checkout() {
                   <input
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+1 (555) 000-0000"
                     required
                   />
                 </div>
@@ -117,40 +145,37 @@ function Checkout() {
                 className="btn-primary-full"
                 disabled={loading}
               >
-                {loading ? "Processing..." : "Continue to payment"}
+                {loading ? "Processing..." : "Continue to payment →"}
               </button>
             </form>
           </div>
 
           <div className="price-summary-card">
-            <h3>{trip.propertyName}</h3>
-            <p
-              style={{
-                fontSize: "13px",
-                color: "#6b7d8f",
-                marginBottom: "14px",
-              }}
-            >
-              {trip.roomName} · {nights} night{nights > 1 ? "s" : ""}
-            </p>
-            <img
-              src={trip.propertyImage}
-              alt={trip.propertyName}
-              style={{
-                width: "100%",
-                height: "140px",
-                objectFit: "cover",
-                borderRadius: "8px",
-                marginBottom: "16px",
-              }}
-            />
+            <h3>Booking Summary</h3>
+            <div className="summary-trip-info">
+              <img
+                src={trip.propertyImage}
+                alt={trip.propertyName}
+                style={{
+                  width: "100%",
+                  height: "120px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                  marginBottom: "12px",
+                }}
+              />
+              <h4>{trip.propertyName}</h4>
+              <p className="summary-subtext">
+                {trip.roomName} · {nights} night{nights > 1 ? "s" : ""}
+              </p>
+            </div>
 
             <div className="price-line">
-              <span>Room total</span>
+              <span>Room total ({nights} nights)</span>
               <span>${roomTotal}</span>
             </div>
             <div className="price-line">
-              <span>Taxes</span>
+              <span>Taxes & Fees</span>
               <span>${taxes}</span>
             </div>
             <div className="price-line">
@@ -158,7 +183,7 @@ function Checkout() {
               <span>${serviceFee}</span>
             </div>
             <div className="price-line total">
-              <span>Total</span>
+              <span>Total Due</span>
               <span>${total}</span>
             </div>
           </div>

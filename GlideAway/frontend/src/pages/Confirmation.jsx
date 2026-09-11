@@ -20,6 +20,32 @@ function Confirmation() {
   return (
     <div className="booking-page">
       <div className="booking-container">
+        {/* Progress Indicator */}
+        <div
+          className="checkout-steps-indicator"
+          style={{ marginBottom: "20px" }}
+        >
+          <div className="step-item completed">
+            <span className="step-circle">✓</span>
+            <span className="step-text">Selection</span>
+          </div>
+          <div className="step-line completed"></div>
+          <div className="step-item completed">
+            <span className="step-circle">✓</span>
+            <span className="step-text">Details</span>
+          </div>
+          <div className="step-line completed"></div>
+          <div className="step-item completed">
+            <span className="step-circle">✓</span>
+            <span className="step-text">Payment</span>
+          </div>
+          <div className="step-line completed"></div>
+          <div className="step-item completed active">
+            <span className="step-circle">✓</span>
+            <span className="step-text">Confirm</span>
+          </div>
+        </div>
+
         <div className="confirm-wrap">
           <div className="confirm-check">✓</div>
           <h1>Booking confirmed!</h1>
