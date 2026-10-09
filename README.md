@@ -110,6 +110,66 @@ The project provides a responsive travel platform where users can explore destin
 📁 **Project Folder:** [`GlideAway`](./GlideAway)
 
 ---
+### Task 04 — QuickBite
+
+**QuickBite** is a full-stack **Online Food Ordering Platform** developed using **React.js, Node.js, Express.js, and MongoDB**.
+
+The application allows customers to discover restaurants, browse menus, customize food items, manage their carts, place orders, and view their order history. It also includes an admin dashboard for managing the platform.
+
+🔗 **Main Repository:** [QuickBite — Online Food Ordering Website](https://github.com/alisha-tech21/quickbite_online_food_ordering_website)
+
+**Technologies:**
+- React.js
+- Vite
+- JavaScript
+- Tailwind CSS
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT Authentication
+- Cloudinary
+- REST APIs
+- Playwright
+
+**Customer Features:**
+- User registration and login
+- OTP-based account recovery
+- Restaurant discovery
+- Restaurant search and filtering
+- Menu browsing
+- Food item customization
+- Cart management
+- Checkout functionality
+- Cash on Delivery (COD)
+- Order history
+- Eligible order cancellation
+- Offers and vouchers
+
+**Admin Features:**
+- Dashboard and order statistics
+- Order management and status updates
+- User management
+- Restaurant management
+- Menu item management
+- Voucher management
+- Review management
+- System settings
+
+**Testing:**
+- Frontend automated tests
+- Backend API tests
+- End-to-end tests using Playwright
+
+> **Payment Note:** Cash on Delivery is supported in the tested checkout flow. Live online payment gateway processing has not yet been implemented.
+
+**Project Links:**
+- 🎨 **Frontend:** [QuickBite Frontend Code](https://github.com/alisha-tech21/quickbite_online_food_ordering_website/tree/main/quickbite-frontend)
+- ⚙️ **Backend:** [QuickBite Backend Code](https://github.com/alisha-tech21/quickbite_online_food_ordering_website/tree/main/quickbite-backend)
+- 🌐 **Complete Project:** [View QuickBite on GitHub](https://github.com/alisha-tech21/quickbite_online_food_ordering_website)
+
+---
+
 
 ## 🛠️ Main Technologies Used
 
@@ -120,6 +180,7 @@ Across the projects in this repository:
 - JavaScript
 - HTML5
 - CSS3
+- Tailwind CSS
 - Node.js
 - Express.js
 - MongoDB
@@ -127,9 +188,10 @@ Across the projects in this repository:
 - REST APIs
 - JWT Authentication
 - Axios
+- Cloudinary
+- Socket.IO
 - Git & GitHub
 
----
 
 ---
 
